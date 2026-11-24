@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import Navbar from '@/components/layout/Navbar'
@@ -10,13 +9,12 @@ export default function AboutPage() {
   return (
     <>
       <Navbar />
-      <main id="main" className="px-[var(--gutter)] pb-24 pt-10 sm:pt-16">
+      <main id="main" className="px-[var(--gutter)] pb-24 pt-28 sm:pt-36">
         <article className="mx-auto max-w-3xl">
           <p className="t-eyebrow">About</p>
           <h1 className="t-display mt-3 text-balance">Built from a personal problem.</h1>
 
-          <div className="mt-10 flex items-center gap-4">
-            <Image src="/ap.jpeg" alt="Aarav Puri" width={56} height={56} className="h-14 w-14 rounded-full object-cover" />
+          <div className="mt-10">
             <div>
               <p className="font-medium">Aarav Puri</p>
               <a
@@ -31,24 +29,26 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="prose-nourish mt-10 text-[1.0625rem] leading-8">
-            <blockquote className="mb-10 border-l-2 border-accent pl-5 text-xl font-medium leading-snug tracking-[-0.02em] text-ink sm:text-2xl sm:leading-snug">
-              &ldquo;My dad is vegetarian, and I kept noticing how often packaged food quietly includes things that do
-              not fit. I wanted a scan to tell us, instantly.&rdquo;
-            </blockquote>
+          <div className="prose-lumen mt-10 text-[1.0625rem] leading-8">
+            <p className="!mb-8 font-display text-2xl font-semibold leading-snug tracking-[-0.02em] text-ink">Lumen started with my dad.</p>
             <p>
-              Hidden animal-derived ingredients, confusing labels and unclear nutritional information made grocery
-              shopping unnecessarily complicated. Nourish began as a way to fix that, not just for vegetarians but for
-              anyone trying to make informed choices about what they eat.
+              My dad is vegetarian, and I kept noticing how much effort went into figuring out whether he could eat
+              something. Even with everyday groceries, ingredients weren&rsquo;t always straightforward. Something that
+              looked completely fine could contain an animal-derived ingredient hidden behind an unfamiliar name.
             </p>
             <p>
-              From there, the idea grew beyond checking ingredients. People need help understanding what they&rsquo;re
-              eating and finding better options, with a single scan.
+              It made me wonder why something so simple had to be so complicated. Why couldn&rsquo;t my dad just scan a
+              product and immediately know whether it was right for him?
+            </p>
+            <p>So I built something that could do exactly that.</p>
+            <p>
+              As I developed Lumen, I realized it could help far beyond my own family. I wanted to understand more about
+              the food I was eating, too. What was actually in it? What did those unfamiliar ingredients mean? Were there
+              other options that better suited my needs?
             </p>
             <p>
-              The result is a focused tool that tells you what is in your food, checks it against the way you eat, and
-              suggests something better when it should. It is powered by open data and AI, built from a personal
-              problem, and designed to make better eating feel effortless.
+              Those questions shaped Lumen. With a single scan, you can see what&rsquo;s in your food, check whether it
+              fits the way you eat, and compare it with other products to find a better option.
             </p>
           </div>
 

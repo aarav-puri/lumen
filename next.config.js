@@ -24,3 +24,6 @@ const nextConfig = {
 }
 
 module.exports = nextConfig
+
+// Lets `next dev` use Cloudflare bindings. Production runs on Cloudflare Workers via OpenNext.
+require('@opennextjs/cloudflare').initOpenNextCloudflareForDev()

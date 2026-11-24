@@ -24,6 +24,11 @@ export default function ScannerHome({ onOpen }: { onOpen: (code: string) => void
   const fileRef = useRef<HTMLInputElement>(null)
   const numberRef = useRef<HTMLInputElement>(null)
   const reduce = useReducedMotion()
+  // Deep link from the command palette: /app?camera=1 opens the camera.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('camera') === '1') setCamera(true)
+  }, [])
+
   // Set after mount so the server and the browser render the same first frame.
   const [greeting, setGreeting] = useState('Hello')
   useEffect(() => {
@@ -121,13 +126,17 @@ export default function ScannerHome({ onOpen }: { onOpen: (code: string) => void
       />
       <section aria-labelledby="scan-h" className="scanner-workspace">
         {/* The live camera is the main way in; the tabs below are the fallbacks. */}
-        <button type="button" onClick={() => setCamera(true)} className="scan-camera-button">
-          <span className="grid h-16 w-16 place-items-center rounded-full bg-on-accent/15 ring-1 ring-on-accent/25">
-            <Camera className="h-7 w-7" aria-hidden="true" />
-          </span>
-          <span>
+        <button type="button" onClick={() => setCamera(true)} className="scan-camera-button group">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/glass/barcode.webp"
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 top-3 w-40 -translate-x-1/2 drop-shadow-[0_20px_40px_rgb(139_123_255/0.45)] transition-transform duration-500 group-hover:scale-105 sm:top-2 sm:w-48"
+          />
+          <span className="flex items-center gap-2">
+            <Camera className="h-5 w-5" aria-hidden="true" />
             Scan with camera
-            <span className="mt-1 block text-sm font-normal text-on-accent/75">Point it at any barcode</span>
           </span>
         </button>
         <div role="tablist" aria-label="Other ways to scan" className="scan-switch">
@@ -188,6 +197,7 @@ export default function ScannerHome({ onOpen }: { onOpen: (code: string) => void
       {camera && (
         <CameraScanner
           onDetected={(c) => {
+            navigator.vibrate?.(15)
             setCamera(false)
             onOpen(c)
           }}

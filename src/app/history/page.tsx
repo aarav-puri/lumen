@@ -10,6 +10,7 @@ import { useAuth } from '@/lib/auth-context'
 import { SCORE_BANDS, toFood, type Food, type Grade } from '@/lib/food'
 import { checkProduct, dietLabel, isProfileEmpty, overallStatus } from '@/lib/profile'
 import { productCache } from '@/lib/scan-cache'
+import { clearCachedRows, loadRows } from '@/lib/scans'
 import { dayBucket, timeAgo } from '@/lib/time'
 import AppShell from '@/components/app/AppShell'
 import PageHeader from '@/components/app/PageHeader'
@@ -50,6 +51,7 @@ function History() {
   const router = useRouter()
   const { profile } = useAuth()
   const [rows, setRows] = useState<any[] | null>(null)
+  const [offline, setOffline] = useState(false)
   const [error, setError] = useState(false)
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
@@ -61,12 +63,20 @@ function History() {
 
   const load = useCallback(() => {
     setError(false)
-    db.getScannedProducts(500)
-      .then((data) => setRows(data ?? []))
+    loadRows(500)
+      .then(({ rows, offline }) => {
+        setRows(rows)
+        setOffline(offline)
+      })
       .catch(() => setError(true))
   }, [])
 
   useEffect(load, [load])
+
+  // Deep link from the command palette: /history?ask=1 opens Lumen AI.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('ask') === '1') setChatOpen(true)
+  }, [])
 
   // Commit any deletions still waiting on their undo window when leaving.
   useEffect(() => {
@@ -182,6 +192,7 @@ function History() {
       await db.clearAllAIInsights()
       await db.clearAllScannedProducts()
       productCache.clear()
+      clearCachedRows()
       setRows([])
       setConfirmClear(false)
       toast.success('History cleared')
@@ -191,7 +202,7 @@ function History() {
     setClearing(false)
   }
 
-  // A compact, readable summary for Nourish AI rather than raw database records.
+  // A compact, readable summary for Lumen AI rather than raw database records.
   const chatContext = useMemo(
     () => ({
       profile: { diets: profile.diets.map(dietLabel), avoids: profile.avoid },
@@ -219,11 +230,17 @@ function History() {
     <div className="mx-auto max-w-2xl">
       <PageHeader
         title="History."
-        subtitle={rows === null ? '\u00a0' : total === 0 ? 'Nothing here yet.' : `${total} product${total === 1 ? '' : 's'} scanned`}
+        subtitle={
+          rows === null
+            ? '\u00a0'
+            : total === 0
+              ? 'Nothing here yet.'
+              : `${total} product${total === 1 ? '' : 's'} scanned${offline ? '. You are offline, so this is your saved copy.' : ''}`
+        }
         actions={
           total > 0 && (
             <Button variant="secondary" onClick={() => setChatOpen(true)}>
-              Ask Nourish AI
+              Ask Lumen AI
             </Button>
           )
         }

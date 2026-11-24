@@ -46,7 +46,7 @@ export default function ProductReport({ food, actions }: { food: Food; actions?:
 
 function ProductHeader({ food, actions }: { food: Food; actions?: React.ReactNode }) {
   return (
-    <header className="flex items-start gap-4 px-1 sm:gap-5">
+    <header className="flex flex-col gap-4 px-1 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
       <div className="min-w-0 flex-1">
         {food.brand && food.brand.toLowerCase() !== food.name.toLowerCase() && (
           <p className="truncate text-sm font-medium text-ink-2">{food.brand}</p>
@@ -60,7 +60,7 @@ function ProductHeader({ food, actions }: { food: Food; actions?: React.ReactNod
           {food.manual && <span>Entered by hand</span>}
         </p>
       </div>
-      {actions && <div className="hidden shrink-0 sm:block">{actions}</div>}
+      {actions && <div className="shrink-0">{actions}</div>}
     </header>
   )
 }
@@ -70,7 +70,7 @@ function ProductHeader({ food, actions }: { food: Food; actions?: React.ReactNod
 function Verdict({ food, points }: { food: Food; points: ReturnType<typeof keyPoints> }) {
   const info = food.grade ? GRADE_INFO[food.grade] : null
   return (
-    <section aria-labelledby="verdict-h" className="card overflow-hidden">
+    <section aria-labelledby="verdict-h" className="card overflow-hidden bg-[radial-gradient(80%_60%_at_20%_0%,rgb(139_123_255/0.16),transparent_70%)]">
       <div className="p-5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <h2 id="verdict-h" className="t-eyebrow">
@@ -125,10 +125,10 @@ function Verdict({ food, points }: { food: Food; points: ReturnType<typeof keyPo
 /* ---------- For you --------------------------------------------------- */
 
 const STATUS: Record<CheckStatus, { title: string; banner: string; dot: string }> = {
-  conflict: { title: 'Does not fit your profile', banner: 'bg-[#d70015] text-white', dot: 'bg-level-high' },
-  caution: { title: 'Check the package before buying', banner: 'bg-surface-3 text-ink', dot: 'bg-level-moderate' },
-  unknown: { title: 'Mostly fits, some unknowns', banner: 'bg-surface-3 text-ink', dot: 'bg-ink-3' },
-  ok: { title: 'Fits your profile', banner: 'bg-[#16703c] text-white', dot: 'bg-level-low' },
+  conflict: { title: 'Does not fit your profile', banner: 'banner-glass banner-bad', dot: 'bg-level-high' },
+  caution: { title: 'Check the package before buying', banner: 'banner-glass banner-check', dot: 'bg-level-moderate' },
+  unknown: { title: 'Mostly fits, some unknowns', banner: 'banner-neutral', dot: 'bg-ink-3' },
+  ok: { title: 'Fits your profile', banner: 'banner-glass banner-good', dot: 'bg-level-low' },
 }
 
 function ForYou({ checks, profileEmpty }: { checks: Check[]; profileEmpty: boolean }) {
@@ -140,7 +140,7 @@ function ForYou({ checks, profileEmpty }: { checks: Check[]; profileEmpty: boole
             Get warnings made for you
           </h2>
           <p className="mt-1 text-sm leading-relaxed text-ink-2">
-            Tell Nourish your diet and what you avoid, and every scan checks itself against it.
+            Tell Lumen your diet and what you avoid, and every scan checks itself against it.
           </p>
           <Link href="/settings#profile" className="mt-3 inline-flex text-sm font-medium text-accent-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink">
             Set up your food profile

@@ -14,13 +14,13 @@ interface AuthShellProps {
 
 /**
  * The shared frame for sign in and sign up: the form on the left, and on
- * wide screens the thing it unlocks, a Nourish report on a phone.
+ * wide screens the thing it unlocks, a Lumen report on a phone.
  */
 export default function AuthShell({ eyebrow, title, lede, children, footer }: AuthShellProps) {
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
       <main id="main" className="flex flex-col px-[var(--gutter)] py-5">
-        <Link href="/" aria-label="Nourish home" className="self-start rounded-md">
+        <Link href="/" aria-label="Lumen home" className="self-start rounded-md">
           <Wordmark />
         </Link>
 
@@ -35,7 +35,7 @@ export default function AuthShell({ eyebrow, title, lede, children, footer }: Au
 
       <aside
         aria-hidden="true"
-        className="relative m-3 hidden flex-col items-center justify-end overflow-hidden rounded-[36px] bg-surface-2/80 px-10 pt-16 lg:flex"
+        className="glass relative m-3 hidden flex-col items-center justify-end overflow-hidden rounded-[36px] bg-[radial-gradient(60%_50%_at_50%_75%,rgb(139_123_255/0.2),transparent)] px-10 pt-16 lg:flex"
       >
         <p className="max-w-[14ch] text-balance text-center text-[2rem] font-semibold leading-[1.05] tracking-[-0.04em]">
           The fine print, made clear.

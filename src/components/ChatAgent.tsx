@@ -27,10 +27,10 @@ const TOKENS_PER_TICK = 4
 const TICK_MS = 28
 
 /**
- * Nourish AI: questions answered from the person's own scan history. Opens as a
+ * Lumen AI: questions answered from the person's own scan history. Opens as a
  * sheet so it never fights the tab bar for the bottom of a phone screen.
  * Reply patterns (timed headers, streamed text, actions, follow-ups) follow
- * Beautiful UI's AI primitives, drawn in Nourish's soft clay.
+ * Beautiful UI's AI primitives, drawn in Lumen's soft clay.
  */
 export default function ChatAgent({ context, open, onClose }: { context?: any; open: boolean; onClose: () => void }) {
   const [messages, setMessages] = useState<Message[]>([])
@@ -63,7 +63,7 @@ export default function ChatAgent({ context, open, onClose }: { context?: any; o
     if (!text.trim() || busy) return
     const apiKey = getGeminiApiKey()
     if (!apiKey) {
-      toast.error('Add your Gemini key in Settings to chat with Nourish AI.')
+      toast.error('Add your Gemini key in Settings to chat with Lumen AI.')
       return
     }
 
@@ -103,7 +103,7 @@ export default function ChatAgent({ context, open, onClose }: { context?: any; o
     <Modal
       isOpen={open}
       onClose={onClose}
-      label="Nourish AI"
+      label="Lumen AI"
       size="lg"
       footer={
         <form
@@ -114,7 +114,7 @@ export default function ChatAgent({ context, open, onClose }: { context?: any; o
           className="rounded-[22px] bg-surface p-1.5 ring-1 ring-inset ring-line transition-shadow duration-150 focus-within:ring-2 focus-within:ring-accent"
         >
           <label htmlFor="chat-input" className="sr-only">
-            Message Nourish AI
+            Message Lumen AI
           </label>
           <textarea
             id="chat-input"
@@ -128,7 +128,7 @@ export default function ChatAgent({ context, open, onClose }: { context?: any; o
                 send(input)
               }
             }}
-            placeholder="Ask Nourish AI about your scans…"
+            placeholder="Ask Lumen AI about your scans…"
             className="block max-h-[132px] w-full resize-none bg-transparent px-2 pb-1 pt-1.5 text-[0.9375rem] leading-relaxed text-ink [overflow-wrap:anywhere] placeholder:text-ink-3 focus:outline-none"
           />
           <div className="flex items-center justify-between gap-2 pl-1 pt-1">
@@ -152,7 +152,7 @@ export default function ChatAgent({ context, open, onClose }: { context?: any; o
         {messages.length === 0 ? (
           <div className="chat-in pt-2">
             <div>
-              <p className="text-lg font-semibold tracking-tight">Hi, I&rsquo;m Nourish AI.</p>
+              <p className="text-lg font-semibold tracking-tight">Hi, I&rsquo;m Lumen AI.</p>
               <p className="text-sm text-ink-2">
                 I&rsquo;ve read your {productCount} scan{productCount === 1 ? '' : 's'}. Ask me anything about them.
               </p>
@@ -266,7 +266,7 @@ function Reply({
     <div className="chat-in">
       <div className="min-w-0 max-w-[92%]">
         <p className="flex items-center gap-1 text-xs leading-5">
-          <span className="font-semibold text-ink">Nourish AI</span>
+          <span className="font-semibold text-ink">Lumen AI</span>
           <span className="text-ink-3">read {productCount} scan{productCount === 1 ? '' : 's'}</span>
           {message.took !== undefined && <span className="tnum text-ink-2">for {message.took.toFixed(1)}s</span>}
         </p>

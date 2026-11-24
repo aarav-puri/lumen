@@ -8,14 +8,14 @@ export default function TermsPage() {
   return (
     <>
       <Navbar />
-      <main id="main" className="mx-auto max-w-3xl px-[var(--gutter)] pb-24 pt-10 sm:pt-16">
+      <main id="main" className="mx-auto max-w-3xl px-[var(--gutter)] pb-24 pt-28 sm:pt-36">
         <p className="t-eyebrow">Legal</p>
         <h1 className="t-title mt-2">Terms of Service</h1>
-        <div className="prose-nourish mt-8">
+        <div className="prose-lumen mt-8">
           <section>
             <h2>1. Acceptance of Terms</h2>
             <p>
-              By accessing and using Nourish, you accept and agree to be bound by these Terms of Service. 
+              By accessing and using Lumen, you accept and agree to be bound by these Terms of Service. 
               If you do not agree to these terms, please do not use our service.
             </p>
           </section>
@@ -23,7 +23,7 @@ export default function TermsPage() {
           <section>
             <h2>2. Description of Service</h2>
             <p>
-              Nourish is a product scanning application that provides AI powered insights about food products, 
+              Lumen is a product scanning application that provides AI powered insights about food products, 
               including nutritional information, health scores and dietary compatibility.
             </p>
           </section>
@@ -39,7 +39,7 @@ export default function TermsPage() {
           <section>
             <h2>4. Age Requirement</h2>
             <p>
-              You must be at least 18 years old to use Nourish. By using our service, you represent and
+              You must be at least 18 years old to use Lumen. By using our service, you represent and
               warrant that you meet this age requirement.
             </p>
           </section>
@@ -47,7 +47,7 @@ export default function TermsPage() {
           <section>
             <h2>5. Disclaimer</h2>
             <p>
-              The information provided by Nourish is for informational purposes only and should not be 
+              The information provided by Lumen is for informational purposes only and should not be 
               considered medical or nutritional advice. Product information is sourced from third party databases 
               and AI analysis, which may not always be accurate or complete.
             </p>
@@ -60,7 +60,7 @@ export default function TermsPage() {
           <section>
             <h2>6. Limitation of Liability</h2>
             <p>
-              Nourish and its creators shall not be liable for any direct, indirect, incidental, special, 
+              Lumen and its creators shall not be liable for any direct, indirect, incidental, special, 
               or consequential damages resulting from the use or inability to use our service, or from any 
               information obtained through our service.
             </p>
@@ -69,7 +69,7 @@ export default function TermsPage() {
           <section>
             <h2>7. Intellectual Property</h2>
             <p>
-              All content, features, and functionality of Nourish are owned by us and are protected by 
+              All content, features, and functionality of Lumen are owned by us and are protected by 
               international copyright, trademark, and other intellectual property laws.
             </p>
           </section>

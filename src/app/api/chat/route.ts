@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GEMINI_LITE } from '@/lib/gemini-models'
-import { nourishSystemPrompt } from '@/lib/nourish-ai-prompt'
+import { lumenSystemPrompt } from '@/lib/lumen-ai-prompt'
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Build system prompt with context from scan history
-    const systemPrompt = nourishSystemPrompt(context)
+    const systemPrompt = lumenSystemPrompt(context)
 
     const response = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
       method: 'POST',
