@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://nourishlabs.vercel.app">
+<a href="https://lumen.puri-aarav.workers.dev">
   <img src="public/brand/lumen-mark.png" alt="Lumen" height="72">
 </a>
 
@@ -10,13 +10,13 @@
 
 Scan a barcode and see exactly what is inside, clearly explained: a health score out of 100, how processed it is, and whether it fits your diet and allergies.
 
-[**Open Lumen**](https://nourishlabs.vercel.app) · [Privacy Policy](https://nourishlabs.vercel.app/privacy) · [How it works](#how-it-works) · [Run it locally](#run-it-locally)
+[**Open Lumen**](https://lumen.puri-aarav.workers.dev) · [Privacy Policy](https://lumen.puri-aarav.workers.dev/privacy) · [How it works](#how-it-works) · [Run it locally](#run-it-locally)
 
 ![Next.js 15](https://img.shields.io/badge/Next.js-15-1f2a24?logo=nextdotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-2d5f46?logo=typescript&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2B%20Postgres-2d5f46?logo=supabase&logoColor=white)
 ![Gemini](https://img.shields.io/badge/AI-Gemini-2d5f46?logo=googlegemini&logoColor=white)
-![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-1f2a24?logo=vercel&logoColor=white)
+![Deployed on Cloudflare](https://img.shields.io/badge/Deployed%20on-Cloudflare%20Workers-1f2a24?logo=cloudflare&logoColor=white)
 
 </div>
 
@@ -57,7 +57,7 @@ Supported barcodes: EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39 and QR codes.
 | Scanning | Quagga barcode detection on the camera stream and on images |
 | Interface | Motion for React, cmdk (command palette), Sonner for toasts, Lucide icons |
 | Offline | Web app manifest and a service worker (public/sw.js) |
-| Hosting | Vercel |
+| Hosting | Cloudflare Workers, via OpenNext |
 
 ## Repository layout
 
@@ -97,4 +97,19 @@ npm run dev                            # http://localhost:3000
 
 ## Deploying
 
-Pushes to `main` deploy to production on Vercel. Set the same variables in the Vercel project, and add your production URL to the Supabase redirect allow list so sign-in can return to it.
+Lumen runs on Cloudflare Workers through the [OpenNext adapter](https://opennext.js.org/cloudflare).
+
+```bash
+npx wrangler login
+npm run preview    # build and run the Worker locally
+npm run deploy     # build and deploy to Cloudflare
+```
+
+Public `NEXT_PUBLIC_*` values are read from `.env.local` at build time. Add the server secrets to the Worker once:
+
+```bash
+npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+npx wrangler secret put GO_UPC_API_KEY
+```
+
+Add your production URL to the Supabase redirect allow list so sign-in can return to it.

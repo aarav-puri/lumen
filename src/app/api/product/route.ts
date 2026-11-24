@@ -103,7 +103,7 @@ const NUTRIMENT_KEYS = [
   'carbohydrates_100g', 'sugars_100g', 'fiber_100g', 'proteins_100g', 'salt_100g', 'sodium_100g',
 ]
 
-const USER_AGENT = `Lumen/2.0 (${process.env.NEXT_PUBLIC_APP_URL || 'https://nourish.app'})`
+const USER_AGENT = `Lumen/2.0 (${process.env.NEXT_PUBLIC_APP_URL || 'https://lumen.puri-aarav.workers.dev'})`
 
 function slimProduct(product: any) {
   const nutriments: Record<string, unknown> = {}
