@@ -240,7 +240,7 @@ function AccountSection() {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:px-6">
-          <p className="text-sm font-medium text-level-high">Delete account</p>
+          <p className="text-sm text-ink-2">Permanently remove your account, scans and food profile.</p>
           <Button variant="secondary" size="sm" className="text-level-high" onClick={() => setDeleteOpen(true)}>
             Delete account
           </Button>
