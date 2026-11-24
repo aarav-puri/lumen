@@ -66,10 +66,6 @@ const FAQ = [
     a: 'Only for Nourish AI. Everything else works without one. To use the chat, paste your own Google Gemini key in Settings. It is stored in your browser, not on our servers.',
   },
   {
-    q: 'Where does the product data come from?',
-    a: 'Open Food Facts, the open database of packaged food, with Go-UPC as a fallback. If a product is missing, type in the label and Nourish grades it the same way.',
-  },
-  {
     q: 'Which barcodes can it read?',
     a: 'EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39 and QR codes, from your camera, a photo, a pasted image, or the number itself.',
   },
