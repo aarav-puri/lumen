@@ -1,13 +1,23 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, Manrope } from 'next/font/google'
+import localFont from 'next/font/local'
 import { AuthProvider } from '@/lib/auth-context'
 import Toaster from '@/components/ui/Toaster'
 import ServiceWorker from '@/components/ServiceWorker'
 import './globals.css'
 
-/** Inter for reading, Manrope for headings. */
+/** Inter for reading, Manrope for headings, Clash Display (Fontshare) for the hero line. */
 const sans = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-sans' })
 const display = Manrope({ subsets: ['latin'], display: 'swap', weight: ['500', '600', '700', '800'], variable: '--font-display' })
+const hero = localFont({
+  src: [
+    { path: '../fonts/ClashDisplay-500.woff2', weight: '500', style: 'normal' },
+    { path: '../fonts/ClashDisplay-600.woff2', weight: '600', style: 'normal' },
+  ],
+  display: 'swap',
+  variable: '--font-hero',
+  fallback: ['system-ui', 'sans-serif'],
+})
 
 export const metadata: Metadata = {
   title: {
@@ -49,7 +59,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable}`}>
+    <html lang="en" className={`${sans.variable} ${display.variable} ${hero.variable}`}>
       <body>
         <a href="#main" className="skip-link">
           Skip to content

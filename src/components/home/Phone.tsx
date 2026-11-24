@@ -1,7 +1,7 @@
 /**
  * An iPhone 16 Pro around a real screenshot of Lumen. Geometry follows the
- * 21st.dev "iPhone 16 Pro" mockup (designali-in), drawn up with a natural
- * titanium frame, side buttons, a Dynamic Island and a glass reflection.
+ * 21st.dev "iPhone 16 Pro" mockup (designali-in), drawn up in Black Titanium
+ * with side buttons, antenna bands, a Dynamic Island and a glass reflection.
  * Screens live in public/screens as `<name>.jpg`, captured at 393 x 852 (2x).
  */
 import { useId } from 'react'
@@ -28,24 +28,24 @@ export function Phone({ screen, className = '', priority = false }: { screen: Sc
       <img src={src} alt={ALT[screen]} loading={priority ? 'eager' : 'lazy'} className="sr-only" />
       <svg viewBox="-6 -2 212 404" className="block h-auto w-full drop-shadow-[0_40px_60px_rgb(0_0_0/0.75)]" aria-hidden="true">
         <defs>
-          {/* Natural titanium: light on the left edge, darker on the right. */}
+          {/* Black Titanium: a lit left edge, a dark brushed face, a softer right edge. */}
           <linearGradient id={`ti-${id}`} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stopColor="#c9c6c1" />
-            <stop offset="0.06" stopColor="#7d7a76" />
-            <stop offset="0.5" stopColor="#5a5855" />
-            <stop offset="0.94" stopColor="#6f6c68" />
-            <stop offset="1" stopColor="#b9b6b1" />
+            <stop offset="0" stopColor="#77777b" />
+            <stop offset="0.035" stopColor="#2c2c2f" />
+            <stop offset="0.5" stopColor="#1b1b1d" />
+            <stop offset="0.965" stopColor="#262629" />
+            <stop offset="1" stopColor="#5d5d61" />
           </linearGradient>
           <linearGradient id={`tiV-${id}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#ffffff" stopOpacity="0.35" />
-            <stop offset="0.12" stopColor="#ffffff" stopOpacity="0" />
-            <stop offset="0.88" stopColor="#000000" stopOpacity="0" />
-            <stop offset="1" stopColor="#000000" stopOpacity="0.35" />
+            <stop offset="0" stopColor="#ffffff" stopOpacity="0.16" />
+            <stop offset="0.1" stopColor="#ffffff" stopOpacity="0" />
+            <stop offset="0.9" stopColor="#000000" stopOpacity="0" />
+            <stop offset="1" stopColor="#000000" stopOpacity="0.4" />
           </linearGradient>
           <linearGradient id={`btn-${id}`} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stopColor="#4a4845" />
-            <stop offset="0.5" stopColor="#a7a39e" />
-            <stop offset="1" stopColor="#4a4845" />
+            <stop offset="0" stopColor="#151517" />
+            <stop offset="0.5" stopColor="#4b4b4f" />
+            <stop offset="1" stopColor="#151517" />
           </linearGradient>
           <linearGradient id={`glare-${id}`} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stopColor="#ffffff" stopOpacity="0.14" />
@@ -56,6 +56,11 @@ export function Phone({ screen, className = '', priority = false }: { screen: Sc
             <stop offset="0" stopColor="#3b4a8f" />
             <stop offset="0.5" stopColor="#141a3a" />
             <stop offset="1" stopColor="#05060c" />
+          </radialGradient>
+          {/* Inner shadow where the glass meets the bezel. */}
+          <radialGradient id={`edge-${id}`} cx="0.5" cy="0.5" r="0.75">
+            <stop offset="0.82" stopColor="#000" stopOpacity="0" />
+            <stop offset="1" stopColor="#000" stopOpacity="0.35" />
           </radialGradient>
           <clipPath id={`screen-${id}`}>
             <rect x={S.x} y={S.y} width={S.w} height={S.h} rx={S.r} />
@@ -72,8 +77,18 @@ export function Phone({ screen, className = '', priority = false }: { screen: Sc
         {/* Frame, then its bevel light, then the black bezel. */}
         <rect x="0.5" y="0.5" width="199" height="399" rx="36" fill={`url(#ti-${id})`} />
         <rect x="0.5" y="0.5" width="199" height="399" rx="36" fill={`url(#tiV-${id})`} />
-        <rect x="2.3" y="2.3" width="195.4" height="395.4" rx="34.4" fill="none" stroke="#ffffff" strokeOpacity="0.22" strokeWidth="0.6" />
-        <rect x="3.4" y="3.4" width="193.2" height="393.2" rx="33.4" fill="#050506" />
+        <rect x="0.5" y="0.5" width="199" height="399" rx="36" fill="none" stroke="#ffffff" strokeOpacity="0.1" strokeWidth="0.5" />
+        <rect x="2.3" y="2.3" width="195.4" height="395.4" rx="34.4" fill="none" stroke="#ffffff" strokeOpacity="0.12" strokeWidth="0.5" />
+        {/* Antenna bands cut into the frame. */}
+        <g fill="#0a0a0b">
+          <rect x="0.4" y="44" width="2.2" height="1.6" />
+          <rect x="197.4" y="44" width="2.2" height="1.6" />
+          <rect x="0.4" y="354" width="2.2" height="1.6" />
+          <rect x="197.4" y="354" width="2.2" height="1.6" />
+          <rect x="44" y="0.4" width="1.6" height="2.2" />
+          <rect x="154.4" y="397.4" width="1.6" height="2.2" />
+        </g>
+        <rect x="3.4" y="3.4" width="193.2" height="393.2" rx="33.4" fill="#020203" />
 
         {/* Screen */}
         <rect x={S.x} y={S.y} width={S.w} height={S.h} rx={S.r} fill="#09090b" />
@@ -86,6 +101,7 @@ export function Phone({ screen, className = '', priority = false }: { screen: Sc
           preserveAspectRatio="xMidYMid slice"
           clipPath={`url(#screen-${id})`}
         />
+        <rect x={S.x} y={S.y} width={S.w} height={S.h} rx={S.r} fill={`url(#edge-${id})`} />
         <rect x={S.x} y={S.y} width={S.w} height={S.h} rx={S.r} fill={`url(#glare-${id})`} />
 
         {/* Dynamic Island with its front camera. */}

@@ -1,14 +1,12 @@
 'use client'
 
 /* eslint-disable @next/next/no-img-element */
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import {
   ArrowRight,
   Camera,
-  ChevronLeft,
-  ChevronRight,
   Columns2,
   ListChecks,
   MessageCircle,
@@ -20,6 +18,7 @@ import {
 import Reveal from '@/components/21st/reveal'
 import { NumberTicker } from '@/components/21st/number-ticker'
 import { Phone, type Screen } from '@/components/home/Phone'
+import { Float, ScrollHighlight, SpotlightCard, Typewriter } from '@/components/home/motion'
 import { GRADE_STYLE } from '@/components/product/Grade'
 import type { Grade } from '@/lib/food'
 
@@ -50,6 +49,78 @@ export function BlurWords({ text, className = '' }: { text: string; className?: 
   )
 }
 
+/* ---------- Hero headline: letters rise into focus, then color sweeps through the last words ---------- */
+
+/** The glass objects' palette: lavender, peach, mint. */
+const SWEEP = [
+  [178, 156, 255],
+  [255, 179, 138],
+  [95, 227, 208],
+]
+
+function sweepColor(t: number) {
+  const seg = Math.min(SWEEP.length - 2, Math.floor(t * (SWEEP.length - 1)))
+  const local = t * (SWEEP.length - 1) - seg
+  const [a, b] = [SWEEP[seg], SWEEP[seg + 1]]
+  const c = a.map((v, k) => Math.round(v + (b[k] - v) * local))
+  return `rgb(${c[0]} ${c[1]} ${c[2]})`
+}
+
+const PUNCT = /[,.]/
+
+function HeroHeadline({ text, highlight = 2 }: { text: string; highlight?: number }) {
+  const reduce = useReducedMotion()
+
+  const words = text.split(' ')
+  const firstLit = words.length - highlight
+  const litCount = words.slice(firstLit).join('').replace(PUNCT, '').length
+
+  const line = (layer: 'base' | 'color') => {
+    let n = 0
+    let lit = 0
+    return words.map((w, wi) => (
+      <span key={wi} className={`inline-block whitespace-nowrap ${layer === 'color' && wi < firstLit ? 'invisible' : ''}`}>
+        {w.split('').map((ch, ci) => {
+          const i = n++
+          const punct = PUNCT.test(ch)
+          const cls = `inline-block ${punct ? 'hero-punct' : ''}`
+          if (layer === 'base') {
+            return (
+              <motion.span
+                key={ci}
+                className={cls}
+                initial={reduce ? false : { opacity: 0, y: '0.45em', filter: 'blur(10px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 0.9, delay: 0.1 + i * 0.028, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {ch}
+              </motion.span>
+            )
+          }
+          const color = wi >= firstLit && !punct ? sweepColor(lit++ / Math.max(1, litCount - 1)) : undefined
+          return (
+            <span key={ci} className={cls} style={{ color }}>
+              {ch}
+            </span>
+          )
+        })}
+        {wi < words.length - 1 ? '\u00a0' : ''}
+      </span>
+    ))
+  }
+
+  return (
+    <span aria-label={text} className="relative block">
+      <span aria-hidden="true">{line('base')}</span>
+      {!reduce && (
+        <span aria-hidden="true" className="hero-sweep pointer-events-none absolute inset-0">
+          {line('color')}
+        </span>
+      )}
+    </span>
+  )
+}
+
 /* ---------- Hero ---------- */
 
 function Hero() {
@@ -64,8 +135,8 @@ function Hero() {
   return (
     <section ref={ref} aria-labelledby="hero-h" className="relative overflow-hidden px-[var(--gutter)] pt-20 sm:pt-28">
       <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-24 h-[34rem] w-[64rem] max-w-[140vw] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(139_123_255/0.22),transparent)] blur-2xl" />
-      <h1 id="hero-h" className="t-display relative mx-auto max-w-[12ch] text-balance text-center text-[#d4d4dc]">
-        <BlurWords text="The fine print, made clear." />
+      <h1 id="hero-h" className="t-hero relative mx-auto max-w-[12ch] text-balance text-center text-[#d4d4dc]">
+        <HeroHeadline text="The fine print, made clear" />
       </h1>
 
       <div className="relative mx-auto mt-10 flex max-w-5xl justify-center sm:mt-14">
@@ -124,21 +195,20 @@ const SAMPLE_SCANS: { name: string; brand: string; grade: Grade; score: number }
 ]
 
 function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <div className={`relative overflow-hidden glass rounded-[28px] ${className}`}>{children}</div>
+  return <SpotlightCard className={className}>{children}</SpotlightCard>
 }
 
 function Bento() {
+  const [answered, setAnswered] = useState(false)
   return (
     <section id="features" aria-labelledby="bento-h" className="scroll-mt-24 px-[var(--gutter)] pb-28 pt-40">
       <div className="mx-auto max-w-6xl">
         <h2 id="bento-h" className="t-title mx-auto max-w-[16ch] text-balance text-center text-[#d4d4dc]">
           <BlurWords text="Know what you are buying." />
         </h2>
-        <Reveal>
-          <p className="mx-auto mt-5 max-w-xl text-center text-lg leading-relaxed text-ink-3">
-            Lumen reads the label for you: a score out of 100, how processed it is, every additive in plain words, and whether it fits the way you eat.
-          </p>
-        </Reveal>
+        <p className="mx-auto mt-5 max-w-xl text-center text-lg leading-relaxed text-ink-2">
+          <ScrollHighlight text="Lumen reads the label for you: a score out of 100, how processed it is, every additive in plain words, and whether it fits the way you eat." />
+        </p>
 
         <div className="mt-16 grid grid-cols-1 gap-4 lg:grid-cols-12 [&>*]:min-w-0">
           {/* History */}
@@ -148,16 +218,20 @@ function Bento() {
               <p className="mt-2 text-ink-3">Find anything you have scanned, sorted by date and searchable by name.</p>
               <ul className="mt-8 space-y-2">
                 {SAMPLE_SCANS.map((s, i) => (
-                  <li
+                  <motion.li
                     key={s.name}
-                    className={`flex items-center gap-3 rounded-2xl px-3 py-2.5 ${i === 0 ? 'iris-ring bg-white/[0.04]' : ''} ${i === 2 ? 'opacity-40' : ''}`}
+                    initial={{ opacity: 0, x: -18 }}
+                    whileInView={{ opacity: i === 2 ? 0.4 : 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.6 }}
+                    transition={{ duration: 0.7, delay: 0.25 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                    className={`flex items-center gap-3 rounded-2xl px-3 py-2.5 ${i === 0 ? 'iris-ring bg-white/[0.04]' : ''}`}
                   >
                     <span className={`tnum flex h-9 min-w-[2.5rem] items-center justify-center rounded-lg text-sm font-semibold ${GRADE_STYLE[s.grade]}`}>{s.score}</span>
                     <span className="min-w-0">
                       <span className="block truncate text-sm font-medium text-ink">{s.name}</span>
                       <span className="block truncate text-xs text-ink-3">{s.brand}</span>
                     </span>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             </Card>
@@ -166,7 +240,10 @@ function Bento() {
           {/* Ways to scan */}
           <Reveal index={1} className="lg:col-span-3">
             <Card className="flex h-full flex-col p-6">
-              <img src={glass('barcode')} alt="" aria-hidden="true" className="-mt-4 mx-auto w-48 drop-shadow-[0_24px_48px_rgb(178_156_255/0.35)]" />
+              <Float className="relative -mt-4 mx-auto w-48" distance={6}>
+                <img src={glass('barcode')} alt="" aria-hidden="true" className="w-full drop-shadow-[0_24px_48px_rgb(178_156_255/0.35)]" />
+                <span aria-hidden="true" className="scan-line" />
+              </Float>
               <h3 className="t-heading mt-auto">Scan it any way</h3>
               <p className="mt-2 text-ink-3">Camera, a photo, a pasted screenshot, or the number under the bars.</p>
             </Card>
@@ -178,25 +255,31 @@ function Bento() {
               <h3 className="t-heading">Checked against you</h3>
               <p className="mt-2 max-w-sm text-ink-3">Save your diets and the allergens you avoid once. Every scan after that is checked for you.</p>
               <div className="relative mx-auto mt-6 flex aspect-square w-full max-w-[22rem] flex-1 items-center justify-center">
-                {[0.98, 0.72, 0.46].map((s) => (
-                  <span key={s} aria-hidden="true" className="absolute rounded-full border border-white/[0.07]" style={{ width: `${s * 100}%`, height: `${s * 100}%` }} />
+                {[0.98, 0.72, 0.46].map((s, i) => (
+                  <span key={s} aria-hidden="true" className="ring-pulse absolute rounded-full border border-white/[0.07]" style={{ width: `${s * 100}%`, height: `${s * 100}%`, animationDelay: `${i * 0.5}s` }} />
                 ))}
                 <div aria-hidden="true" className="absolute h-1/2 w-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_179_138/0.35),rgb(139_123_255/0.2),transparent)] blur-xl" />
-                <img src={glass('orb')} alt="" aria-hidden="true" className="relative w-[38%] drop-shadow-[0_20px_40px_rgb(139_123_255/0.4)]" />
+                <Float className="relative w-[38%]" distance={10} duration={6}>
+                  <img src={glass('orb')} alt="" aria-hidden="true" className="w-full drop-shadow-[0_20px_40px_rgb(139_123_255/0.4)]" />
+                </Float>
                 {[
                   { t: 'Vegetarian', c: 'Fits', x: '6%', y: '14%', tone: 'text-level-low' },
                   { t: 'Tree nuts', c: 'Contains', x: '58%', y: '6%', tone: 'text-level-high' },
                   { t: 'Low sugar', c: 'Check', x: '64%', y: '76%', tone: 'text-level-moderate' },
                   { t: 'Halal', c: 'Fits', x: '0%', y: '70%', tone: 'text-level-low' },
-                ].map((c) => (
-                  <span
+                ].map((c, i) => (
+                  <motion.span
                     key={c.t}
+                    initial={{ opacity: 0, scale: 0.6, y: 12 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ type: 'spring', stiffness: 260, damping: 18, delay: 0.35 + i * 0.15 }}
                     className="glass absolute flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium"
                     style={{ left: c.x, top: c.y }}
                   >
                     {c.t}
                     <span className={c.tone}>{c.c}</span>
-                  </span>
+                  </motion.span>
                 ))}
               </div>
             </Card>
@@ -207,12 +290,19 @@ function Bento() {
             <Card className="grid h-full items-center gap-6 p-6 sm:grid-cols-[1.2fr_1fr]">
               <div>
                 <div className="iris-ring flex h-12 items-center gap-3 rounded-full bg-[#0d0d10] pl-5 pr-1.5">
-                  <span className="flex-1 truncate text-sm text-ink">Which of my snacks has the least sugar?</span>
+                  <Typewriter text="Which of my snacks has the least sugar?" onDone={() => setAnswered(true)} className="flex-1 truncate text-sm text-ink" />
                   <span className="grid h-9 w-9 place-items-center rounded-full bg-white/[0.06]">
                     <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </span>
                 </div>
-                <p className="mt-3 pl-5 text-sm text-ink-3">The almonds you scanned on Tuesday, at 4.4g per 100g.</p>
+                <motion.p
+                  initial={{ opacity: 0, y: 8, filter: 'blur(6px)' }}
+                  animate={answered ? { opacity: 1, y: 0, filter: 'blur(0px)' } : undefined}
+                  transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className="mt-3 pl-5 text-sm text-ink-3"
+                >
+                  The almonds you scanned on Tuesday, at 4.4g per 100g.
+                </motion.p>
               </div>
               <div>
                 <h3 className="t-heading">Ask Lumen AI</h3>
@@ -229,7 +319,7 @@ function Bento() {
 /* ---------- Story: statements beside a sticky phone ---------- */
 
 const STORY: { icon: React.ComponentType<{ className?: string }>; title: string; body: string; screen: Screen }[] = [
-  { icon: ScanLine, title: 'Scan it in the aisle.', body: 'Point your camera at any barcode. Lumen finds the product in Open Food Facts and reads the whole label.', screen: 'scan' },
+  { icon: ScanLine, title: 'Scan it in the aisle.', body: 'Point your camera at any barcode. Lumen finds the product and reads the whole label.', screen: 'scan' },
   { icon: ListChecks, title: 'One number for the whole label.', body: 'A score out of 100 built on the Nutri-Score, with sugar, fat and salt marked low, medium or high.', screen: 'report' },
   { icon: Search, title: 'Checked against the way you eat.', body: 'Fifteen diets, the common allergens, and any ingredient you add yourself, flagged on every scan.', screen: 'profile' },
   { icon: MessageCircle, title: 'Ask about your own cupboard.', body: 'Lumen AI answers from your scan history, on your own Gemini key.', screen: 'chat' },
@@ -249,7 +339,9 @@ function Story() {
                   </span>
                   <div>
                     <h3 className="font-display text-[clamp(2rem,4vw,3.25rem)] font-bold leading-[1.02] tracking-[-0.04em] text-[#d4d4dc]">{s.title}</h3>
-                    <p className="mt-4 max-w-md text-lg leading-relaxed text-ink-3">{s.body}</p>
+                    <p className="mt-4 max-w-md text-lg leading-relaxed text-ink-2">
+                      <ScrollHighlight text={s.body} />
+                    </p>
                   </div>
                 </div>
               </Reveal>
@@ -351,41 +443,69 @@ const NEW = [
   },
 ]
 
+/**
+ * Pinned horizontal scroll: the section sticks to the screen and scrolling
+ * down moves the cards sideways. The page carries on after the last card.
+ */
 function Carousel() {
+  const section = useRef<HTMLElement>(null)
   const track = useRef<HTMLDivElement>(null)
-  const move = (dir: 1 | -1) => track.current?.scrollBy({ left: dir * track.current.clientWidth * 0.8, behavior: 'smooth' })
+  const [distance, setDistance] = useState(0)
+
+  useEffect(() => {
+    const el = track.current
+    if (!el) return
+    const measure = () => setDistance(Math.max(0, el.scrollWidth - window.innerWidth))
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    window.addEventListener('resize', measure)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', measure)
+    }
+  }, [])
+
+  const { scrollYProgress } = useScroll({ target: section, offset: ['start start', 'end end'] })
+  const x = useTransform(scrollYProgress, (p) => -p * distance)
+  const bar = useTransform(scrollYProgress, [0, 1], [0, 1])
+
   return (
-    <section aria-labelledby="new-h" className="border-t border-white/[0.06] py-24">
-      <div className="mx-auto flex max-w-6xl items-end justify-between gap-6 px-[var(--gutter)]">
-        <h2 id="new-h" className="t-title max-w-[14ch] text-[#d4d4dc]">
-          <BlurWords text="Built for how you shop." />
-        </h2>
-        <div className="hidden gap-2 sm:flex">
-          <button type="button" onClick={() => move(-1)} aria-label="Previous" className="btn-icon bg-white/[0.04] ring-1 ring-inset ring-white/10">
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <button type="button" onClick={() => move(1)} aria-label="Next" className="btn-icon bg-white/[0.04] ring-1 ring-inset ring-white/10">
-            <ChevronRight className="h-5 w-5" />
-          </button>
+    <section
+      ref={section}
+      aria-labelledby="new-h"
+      className="relative border-t border-white/[0.06]"
+      style={{ height: `calc(100svh + ${distance}px)` }}
+    >
+      <div className="sticky top-0 flex h-[100svh] flex-col justify-center overflow-hidden">
+        <div className="mx-auto flex w-full max-w-6xl items-end justify-between gap-6 px-[var(--gutter)]">
+          <h2 id="new-h" className="t-title max-w-[14ch] text-[#d4d4dc]">
+            <BlurWords text="Built for how you shop." />
+          </h2>
+          <div aria-hidden="true" className="mb-3 hidden h-px w-40 overflow-hidden rounded-full bg-white/10 sm:block">
+            <motion.div style={{ scaleX: bar }} className="h-full origin-left bg-gradient-to-r from-[#b29cff] to-[#ffb38a]" />
+          </div>
         </div>
-      </div>
-      <div
-        ref={track}
-        className="mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        style={{ paddingInline: 'max(var(--gutter), calc((100vw - 72rem) / 2 + var(--gutter)))', scrollPaddingInline: 'max(var(--gutter), calc((100vw - 72rem) / 2 + var(--gutter)))' }}
-      >
-        {NEW.map((n) => (
-          <article key={n.title} className="flex w-[85vw] max-w-[34rem] shrink-0 snap-start flex-col glass rounded-[28px]">
-            <div className="flex h-60 items-center justify-center bg-[radial-gradient(ellipse_at_50%_60%,rgb(139_123_255/0.12),transparent_70%)] px-6">{n.visual}</div>
-            <div className="p-6 pt-2">
-              <h3 className="t-heading flex items-center gap-2">
-                <n.icon className="h-5 w-5 text-accent" />
-                {n.title}
-              </h3>
-              <p className="mt-2 text-ink-3">{n.body}</p>
-            </div>
-          </article>
-        ))}
+        <motion.div
+          ref={track}
+          style={{ x, paddingInline: 'max(var(--gutter), calc((100vw - 72rem) / 2 + var(--gutter)))' }}
+          className="mt-12 flex w-max gap-4"
+        >
+          {NEW.map((n) => (
+            <SpotlightCard key={n.title} className="flex w-[85vw] max-w-[34rem] shrink-0 flex-col">
+              <div className="flex h-60 items-center justify-center bg-[radial-gradient(ellipse_at_50%_60%,rgb(139_123_255/0.12),transparent_70%)] px-6 transition-transform duration-700 ease-out group-hover:scale-[1.04]">
+                {n.visual}
+              </div>
+              <div className="p-6 pt-2">
+                <h3 className="t-heading flex items-center gap-2">
+                  <n.icon className="h-5 w-5 text-accent" />
+                  {n.title}
+                </h3>
+                <p className="mt-2 text-ink-3">{n.body}</p>
+              </div>
+            </SpotlightCard>
+          ))}
+        </motion.div>
       </div>
     </section>
   )
@@ -416,17 +536,33 @@ function Why() {
                     <NumberTicker target={s.value} />
                     {s.suffix}
                   </span>
-                  <span className="mt-4 block text-lg leading-snug text-ink-2">{s.claim}</span>
-                  <span className="mt-3 block text-sm text-ink-3">{s.source}</span>
+                  <motion.span
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.6 }}
+                    transition={{ duration: 0.7, delay: 0.5 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                    className="mt-4 block text-lg leading-snug text-ink-2"
+                  >
+                    {s.claim}
+                  </motion.span>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true, amount: 0.6 }}
+                    transition={{ duration: 0.7, delay: 0.75 + i * 0.12 }}
+                    className="mt-3 block text-sm text-ink-3"
+                  >
+                    {s.source}
+                  </motion.span>
                 </dd>
               </Card>
             </Reveal>
           ))}
         </dl>
-        <Reveal className="mx-auto mt-20 max-w-3xl text-center">
+        <div className="mx-auto mt-20 max-w-3xl text-center">
           <figure>
             <blockquote className="font-display text-[clamp(1.5rem,3vw,2.25rem)] font-semibold leading-snug tracking-[-0.025em] text-[#d4d4dc]">
-              “My dad is vegetarian, and I kept noticing how often packaged food quietly includes things that do not fit. I wanted a scan to tell us, instantly.”
+              <ScrollHighlight text="“My dad is vegetarian, and I kept noticing how often packaged food quietly includes things that do not fit. I wanted a scan to tell us, instantly.”" />
             </blockquote>
             <figcaption className="mt-6 text-sm text-ink-3">
               <span className="text-ink">Aarav Puri</span>, founder.{' '}
@@ -435,7 +571,7 @@ function Why() {
               </Link>
             </figcaption>
           </figure>
-        </Reveal>
+        </div>
       </div>
     </section>
   )
