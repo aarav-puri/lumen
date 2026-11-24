@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://lumen.puri-aarav.workers.dev">
+<a href="https://trylumen.pages.dev">
   <img src="public/brand/lumen-mark.png" alt="Lumen" height="72">
 </a>
 
@@ -10,7 +10,7 @@
 
 Scan a barcode and see exactly what is inside, clearly explained: a health score out of 100, how processed it is, and whether it fits your diet and allergies.
 
-[**Open Lumen**](https://lumen.puri-aarav.workers.dev) · [Privacy Policy](https://lumen.puri-aarav.workers.dev/privacy) · [How it works](#how-it-works) · [Run it locally](#run-it-locally)
+[**Open Lumen**](https://trylumen.pages.dev) · [Privacy Policy](https://trylumen.pages.dev/privacy) · [How it works](#how-it-works) · [Run it locally](#run-it-locally)
 
 ![Next.js 15](https://img.shields.io/badge/Next.js-15-1f2a24?logo=nextdotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-2d5f46?logo=typescript&logoColor=white)
@@ -97,7 +97,7 @@ npm run dev                            # http://localhost:3000
 
 ## Deploying
 
-Lumen runs on Cloudflare Workers through the [OpenNext adapter](https://opennext.js.org/cloudflare).
+Lumen runs on Cloudflare Workers through the [OpenNext adapter](https://opennext.js.org/cloudflare), served at `trylumen.pages.dev` by a small Cloudflare Pages project in `cloudflare-pages/` that hands every request to the Worker.
 
 ```bash
 npx wrangler login
@@ -110,6 +110,12 @@ Public `NEXT_PUBLIC_*` values are read from `.env.local` at build time. Add the 
 ```bash
 npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 npx wrangler secret put GO_UPC_API_KEY
+```
+
+The Pages front door only needs redeploying if `cloudflare-pages/` changes:
+
+```bash
+cd cloudflare-pages && npx wrangler pages deploy
 ```
 
 Add your production URL to the Supabase redirect allow list so sign-in can return to it.

@@ -1,0 +1,10 @@
+// trylumen.pages.dev: a Cloudflare Pages front door for the Lumen Worker.
+// Every request is handed to the "lumen" Worker over a service binding,
+// so the app itself is deployed once, from the repo root, with `npm run deploy`.
+// Deploy this folder with `npx wrangler pages deploy` from inside it.
+{
+  "name": "trylumen",
+  "pages_build_output_dir": "./public",
+  "compatibility_date": "2026-11-01",
+  "services": [{ "binding": "LUMEN", "service": "lumen" }]
+}
