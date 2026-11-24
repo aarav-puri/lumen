@@ -229,7 +229,7 @@ function History() {
   return (
     <div className="mx-auto max-w-2xl">
       <PageHeader
-        title="History."
+        title="History"
         subtitle={
           rows === null
             ? '\u00a0'

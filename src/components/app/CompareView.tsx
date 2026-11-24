@@ -92,7 +92,7 @@ export function CompareView() {
 
   return (
     <>
-      <PageHeader title="Compare." subtitle="Pick two products you have scanned and see which is the better choice." />
+      <PageHeader title="Compare" subtitle="Pick two products you have scanned and see which is the better choice." />
 
       {entries === null ? (
         <div className="grid gap-3 sm:grid-cols-2" aria-hidden="true">

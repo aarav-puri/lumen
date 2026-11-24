@@ -121,7 +121,7 @@ export default function ScannerHome({ onOpen }: { onOpen: (code: string) => void
       <div className="mx-auto max-w-2xl">
       <PageHeader
         id="scan-h"
-        title={user?.user_metadata?.display_name ? `${greeting}, ${user.user_metadata.display_name}.` : `${greeting}.`}
+        title={user?.user_metadata?.display_name ? `${greeting}, ${user.user_metadata.display_name}` : greeting}
         subtitle="What are you checking today? Scan the barcode, use a photo, or type the number."
       />
       <section aria-labelledby="scan-h" className="scanner-workspace">
