@@ -59,26 +59,6 @@ const FEATURES: Feature[] = [
   },
 ]
 
-const FAQ = [
-  { q: 'Is Nourish free?', a: 'Yes. Scanning, scores, profile checks and your history are free, with no ads.' },
-  {
-    q: 'Do I need an AI key?',
-    a: 'Only for Nourish AI. Everything else works without one. To use the chat, paste your own Google Gemini key in Settings. It is stored in your browser, not on our servers.',
-  },
-  {
-    q: 'Which barcodes can it read?',
-    a: 'EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39 and QR codes, from your camera, a photo, a pasted image, or the number itself.',
-  },
-  {
-    q: 'Does it replace reading the label?',
-    a: 'No. Nourish is a guide, not medical advice. If you have a serious allergy, always read the package yourself.',
-  },
-  {
-    q: 'What happens to my scans?',
-    a: 'They are saved to your account so you can find them in History and ask Nourish AI about them. You can delete your account and its data in Settings.',
-  },
-]
-
 function Frame({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return <div className={`rounded-[32px] bg-surface-2 p-3 ring-1 ring-inset ring-line sm:p-4 ${className}`}>{children}</div>
 }
@@ -222,26 +202,6 @@ export default function HomePage() {
                 </Reveal>
               </div>
             ))}
-          </div>
-        </section>
-
-        {/* ============ FAQ ============ */}
-        <section id="faq" aria-labelledby="faq-h" className="scroll-mt-20 border-t border-line px-[var(--gutter)] py-24">
-          <div className="mx-auto max-w-5xl">
-            <div className="text-center">
-              <p className="t-eyebrow">Questions</p>
-              <h2 id="faq-h" className="t-title mt-3">
-                Frequently asked
-              </h2>
-            </div>
-            <dl className="mt-14 grid gap-4 md:grid-cols-2">
-              {FAQ.map((f) => (
-                <div key={f.q} className="card p-7">
-                  <dt className="font-display text-lg font-bold tracking-[-0.01em]">{f.q}</dt>
-                  <dd className="mt-3 leading-relaxed text-ink-3">{f.a}</dd>
-                </div>
-              ))}
-            </dl>
           </div>
         </section>
 
