@@ -4,7 +4,7 @@ import Wordmark from '@/components/brand/Wordmark'
 export default function NotFound() {
   return (
     <main id="main" className="flex min-h-dvh flex-col px-[var(--gutter)] py-6">
-      <Link href="/" aria-label="Nourish home" className="self-start rounded-md">
+      <Link href="/" aria-label="Lumen home" className="self-start rounded-md">
         <Wordmark />
       </Link>
       <div className="mx-auto flex max-w-md flex-1 flex-col items-center justify-center text-center">

@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ArrowLeft, Camera, PenLine, RotateCcw, SearchX, WifiOff } from 'lucide-react'
+import { ArrowLeft, Camera, Columns2, PenLine, RotateCcw, SearchX, WifiOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/lib/auth-context'
 import { isKnownDiet, isOnboarded } from '@/lib/profile'
@@ -11,6 +11,8 @@ import { getGeminiApiKey } from '@/lib/ai-service'
 import { fetchProductInfo, LookupError } from '@/lib/product-api'
 import { toFood, type Food } from '@/lib/food'
 import { productCache } from '@/lib/scan-cache'
+import { readCachedRows } from '@/lib/scans'
+import ShareButton from '@/components/product/ShareButton'
 import AppShell from '@/components/app/AppShell'
 import CameraScanner from '@/components/app/CameraScanner'
 import ManualEntry from '@/components/app/ManualEntry'
@@ -93,6 +95,11 @@ function Scanner() {
     if (manual) {
       setView({ kind: 'manual', code })
       return
+    }
+    if (!cache.has(code)) {
+      // Seed from the saved history copy, so a past scan opens offline too.
+      const saved = readCachedRows()?.find((r) => (r.barcode || '') === code)
+      if (saved) cache.set(code, toFood(saved.product_data, code))
     }
     const cached = cache.get(code)
     // A copy from before a diet was added is looked up again, so the new diet gets checked.
@@ -181,15 +188,27 @@ function Scanner() {
           <ProductReport
             food={view.food}
             actions={
-              <Button variant="secondary" size="sm" icon={<Camera className="h-4 w-4" aria-hidden="true" />} onClick={() => setCamera(true)}>
-                Scan next
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <ShareButton food={view.food} />
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  icon={<Columns2 className="h-4 w-4" aria-hidden="true" />}
+                  onClick={() => router.push(`/compare?a=${view.food.barcode}`)}
+                >
+                  Compare
+                </Button>
+                <Button variant="secondary" size="sm" icon={<Camera className="h-4 w-4" aria-hidden="true" />} onClick={() => setCamera(true)}>
+                  Scan next
+                </Button>
+              </div>
             }
           />
           <FloatingScan onClick={() => setCamera(true)} />
           {camera && (
             <CameraScanner
               onDetected={(c) => {
+                navigator.vibrate?.(15)
                 setCamera(false)
                 open(c)
               }}

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
+import { ChevronRight, Menu, X } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import Wordmark from '@/components/brand/Wordmark'
 
@@ -41,24 +41,24 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b transition-[background-color,border-color] duration-200 ${
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color] duration-200 ${
         scrolled || open
-          ? 'border-line/80 bg-paper/80 backdrop-blur-xl backdrop-saturate-150'
-          : 'border-transparent bg-paper'
+          ? 'border-white/[0.06] bg-paper/70 backdrop-blur-xl backdrop-saturate-150'
+          : 'border-transparent bg-transparent'
       }`}
     >
       <nav aria-label="Primary" className="relative mx-auto flex h-[4.5rem] max-w-6xl items-center justify-between gap-4 px-[var(--gutter)]">
-        <Link href="/" aria-label="Nourish home" className="rounded-md">
+        <Link href="/" aria-label="Lumen home" className="rounded-md">
           <Wordmark byline />
         </Link>
 
-        <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex">
+        <ul className="ml-auto hidden items-center gap-1 md:flex">
           {NAV.map((l) => (
             <li key={l.href}>
               <Link
                 href={l.href}
                 aria-current={pathname === l.href ? 'page' : undefined}
-                className="inline-flex h-9 items-center rounded-full px-3.5 text-sm text-ink-2 transition-colors hover:text-ink aria-[current=page]:text-ink"
+                className="inline-flex h-9 items-center rounded-full px-3.5 text-[0.9375rem] text-ink-2 transition-colors hover:text-ink aria-[current=page]:text-ink"
               >
                 {l.label}
               </Link>
@@ -79,16 +79,18 @@ export default function Navbar() {
           </button>
           <div className="flex items-center gap-2" aria-busy={loading || undefined}>
             {user ? (
-              <Link href="/app" className="btn-primary h-10 min-h-10 px-5 text-sm">
-                Open Nourish
+              <Link href="/app" className="btn-primary h-10 min-h-10 gap-1 pl-5 pr-4 text-sm">
+                Open Lumen
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             ) : (
               <>
-                <Link href="/signin" className="btn-secondary hidden h-10 min-h-10 px-5 text-sm sm:inline-flex">
+                <Link href="/signin" className="hidden h-10 items-center px-3 text-[0.9375rem] text-ink-2 transition-colors hover:text-ink sm:inline-flex">
                   Sign in
                 </Link>
-                <Link href="/signup" className="btn-primary h-10 min-h-10 px-5 text-sm">
+                <Link href="/signup" className="btn-primary h-10 min-h-10 gap-1 pl-5 pr-4 text-sm">
                   Get started
+                  <ChevronRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               </>
             )}

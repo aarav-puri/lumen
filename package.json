@@ -1,5 +1,5 @@
 {
-  "name": "nourish",
+  "name": "lumen",
   "version": "2.0.0",
   "private": true,
   "scripts": {
@@ -8,14 +8,19 @@
     "start": "next start",
     "lint": "next lint",
     "setup:mcp": "bash scripts/setup-mcp.sh",
-    "test:mcp": "node scripts/test-mcp.js"
+    "test:mcp": "node scripts/test-mcp.js",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.20.18",
     "@radix-ui/react-accordion": "^1.3.1",
     "@supabase/supabase-js": "^2.39.0",
+    "cmdk": "^1.1.1",
     "lucide-react": "^0.469.0",
     "motion": "^12.23.12",
-    "next": "^15.1.6",
+    "next": "^15.5.29",
     "quagga": "^0.12.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -28,9 +33,14 @@
     "autoprefixer": "^10.4.16",
     "dotenv": "^16.4.5",
     "eslint": "^9.18.0",
-    "eslint-config-next": "15.1.6",
+    "eslint-config-next": "^15.5.29",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "wrangler": "^4.167.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "workerd@1.20261123.1": true
   }
 }

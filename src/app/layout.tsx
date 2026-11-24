@@ -1,26 +1,26 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
-import localFont from 'next/font/local'
+import { Inter, Manrope } from 'next/font/google'
 import { AuthProvider } from '@/lib/auth-context'
 import Toaster from '@/components/ui/Toaster'
+import ServiceWorker from '@/components/ServiceWorker'
 import './globals.css'
 
-/** Inter for reading, Satoshi (Fontshare, self-hosted) for headings. */
+/** Inter for reading, Manrope for headings. */
 const sans = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-sans' })
-const display = localFont({ src: './fonts/Satoshi-Variable.woff2', weight: '300 900', display: 'swap', variable: '--font-display' })
+const display = Manrope({ subsets: ['latin'], display: 'swap', weight: ['500', '600', '700', '800'], variable: '--font-display' })
 
 export const metadata: Metadata = {
   title: {
-    default: 'Nourish | The fine print, made clear',
-    template: '%s · Nourish',
+    default: 'Lumen',
+    template: '%s · Lumen',
   },
   description:
-    'Scan any food barcode to see its health score out of 100, how processed it is, and every additive and allergen clearly explained, checked against your diet. Free, with no ads.',
-  applicationName: 'Nourish',
+    'Scan any food barcode for a health score out of 100, how processed it is, and every additive and allergen explained, checked against your diet. Free, with no ads.',
+  applicationName: 'Lumen',
   icons: {
     icon: [
-      { url: '/brand/mark.svg', type: 'image/svg+xml' },
-      { url: '/icons/icon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/favicon-64.png', sizes: '64x64', type: 'image/png' },
       { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
     ],
     apple: [
@@ -30,7 +30,8 @@ export const metadata: Metadata = {
       { url: '/icons/apple-touch-icon-120.png', sizes: '120x120' },
     ],
   },
-  appleWebApp: { title: 'Nourish', statusBarStyle: 'default' },
+  appleWebApp: { capable: true, title: 'Lumen', statusBarStyle: 'black-translucent' },
+  manifest: '/manifest.webmanifest',
   verification: {
     google: '9_JzOdfOk3oOJkfW-pZ7t_XjlRBABpYdauzpEX9h1i0',
   },
@@ -41,8 +42,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#fcfbf7' },
-    { media: '(prefers-color-scheme: dark)', color: '#0c0c0d' },
+    { media: '(prefers-color-scheme: light)', color: '#09090b' },
+    { media: '(prefers-color-scheme: dark)', color: '#09090b' },
   ],
 }
 
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <AuthProvider>{children}</AuthProvider>
         <Toaster />
+        <ServiceWorker />
       </body>
     </html>
   )

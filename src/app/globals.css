@@ -2,57 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Nourish. Warm paper, white cards, warm near-black ink and one deep green
-   accent. Every token is an RGB triple so dark mode is a single swap. */
+/* Lumen. A near-black canvas, cool grey type, one soft violet accent and an
+   iridescent spectrum (violet, pink, peach, teal) reserved for glow and glass.
+   Dark only, by design. Every token is an RGB triple. */
 :root {
-  color-scheme: light;
-  --paper: 252 251 247;
-  --surface: 255 255 255;
-  --surface-2: 245 243 237;
-  --surface-3: 234 231 223;
-  --ink: 43 40 36;
-  --ink-2: 87 82 75;
-  --ink-3: 107 102 94;
-  --line: 232 229 221;
-  --line-strong: 200 195 185;
-  --accent: 22 112 86;
-  --on-accent: 255 255 255;
-  --accent-ink: 17 96 73;
-  --accent-soft: 227 242 235;
-  --on-ink: 255 255 255;
-  --shadow: 43 40 36;
-  --grade-a: 3 129 65;
-  --grade-b: 133 187 47;
-  --grade-c: 254 203 2;
-  --grade-d: 238 129 0;
-  --grade-e: 230 62 17;
-  --level-low: 25 128 70;
-  --level-moderate: 150 118 0;
-  --level-high: 215 0 21;
+  color-scheme: dark;
+  --paper: 9 9 11;
+  --surface: 17 17 20;
+  --surface-2: 24 24 28;
+  --surface-3: 36 36 42;
+  --ink: 232 232 238;
+  --ink-2: 176 176 188;
+  --ink-3: 132 132 146;
+  --line: 34 34 40;
+  --line-strong: 64 64 74;
+  --accent: 178 156 255;
+  --on-accent: 12 8 28;
+  --accent-ink: 196 180 255;
+  --accent-soft: 34 28 58;
+  --on-ink: 9 9 11;
+  --shadow: 0 0 0;
+  /* Grades follow the logo's spectrum: peach (lowest) to teal (best). */
+  --grade-a: 95 227 208;
+  --grade-b: 130 196 255;
+  --grade-c: 139 123 255;
+  --grade-d: 213 156 255;
+  --grade-e: 255 179 138;
+  /* Status colors sit on the same spectrum as the score:
+     good is teal, in between is pink, bad is peach. */
+  --level-low: 95 227 208;
+  --level-moderate: 213 156 255;
+  --level-high: 255 179 138;
   --gutter: clamp(1.25rem, 4vw, 2.5rem);
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --paper: 22 21 19;
-    --surface: 32 31 28;
-    --surface-2: 42 40 37;
-    --surface-3: 56 54 50;
-    --ink: 245 243 237;
-    --ink-2: 205 200 191;
-    --ink-3: 160 154 145;
-    --line: 56 54 50;
-    --line-strong: 100 96 90;
-    --accent: 88 196 150;
-    --on-accent: 8 30 22;
-    --accent-ink: 124 214 174;
-    --accent-soft: 24 48 38;
-    --on-ink: 22 21 19;
-    --shadow: 0 0 0;
-    --level-low: 117 207 143;
-    --level-moderate: 230 200 90;
-    --level-high: 255 99 99;
-  }
+  /* The iridescent spectrum, used for glow rings and the logo. */
+  --iris: linear-gradient(90deg, #8b7bff, #d59cff 30%, #ffb38a 60%, #5fe3d0 100%);
+  /* The score scale, 0 on the left to 100 on the right, in the same colors. */
+  --iris-score: linear-gradient(90deg, #ffb38a, #d59cff 30%, #8b7bff 55%, #82c4ff 78%, #5fe3d0);
 }
 
 /* The user agent's `[hidden] { display: none }` loses to any author display
@@ -79,10 +64,13 @@ body {
   font-feature-settings: 'cv11' 1, 'ss03' 1;
 }
 
-/* Every number in the product is tabular so columns never jitter. */
+/* Every number is set in the heading face with tabular figures, so columns
+   never jitter and digits read as part of the brand. */
 .tnum,
 .font-mono {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 ::selection {
@@ -104,26 +92,25 @@ body {
   /* ---------- Type ---------------------------------------------------- */
   .t-display {
     @apply font-display font-bold text-ink;
-    font-size: clamp(2.6rem, 5.6vw, 4.25rem);
-    line-height: 1.08;
-    letter-spacing: -0.025em;
+    font-size: clamp(3rem, 7.4vw, 6.25rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
   }
 
   .t-title {
     @apply font-display font-bold text-ink;
-    font-size: clamp(1.85rem, 3vw, 2.4rem);
-    line-height: 1.12;
-    letter-spacing: -0.02em;
+    font-size: clamp(2.1rem, 4.4vw, 4rem);
+    line-height: 1.04;
+    letter-spacing: -0.04em;
   }
 
   .t-heading {
-    @apply font-display text-xl font-bold tracking-[-0.015em] text-ink;
+    @apply font-display text-[1.375rem] font-bold tracking-[-0.02em] text-ink;
   }
 
-  /* The small accent label above a section. */
+  /* A quiet label above a section. */
   .t-eyebrow {
-    @apply text-xs font-semibold uppercase text-accent-ink;
-    letter-spacing: 0.12em;
+    @apply text-sm font-medium text-ink-3;
   }
 
   /* A quiet label inside a card. */
@@ -140,7 +127,7 @@ body {
   }
 
   .btn-primary {
-    @apply btn bg-ink text-on-ink hover:bg-ink/90;
+    @apply btn bg-ink text-on-ink shadow-[0_0_0_1px_rgb(255_255_255/0.12),0_8px_30px_-8px_rgb(178_156_255/0.45)] hover:bg-white;
   }
 
   .btn-accent {
@@ -148,7 +135,7 @@ body {
   }
 
   .btn-secondary {
-    @apply btn bg-surface text-ink ring-1 ring-inset ring-line-strong/70 hover:bg-surface-2;
+    @apply btn glass text-ink hover:brightness-125;
   }
 
   .btn-ghost {
@@ -156,7 +143,7 @@ body {
   }
 
   .btn-danger {
-    @apply btn bg-level-high text-white hover:brightness-110;
+    @apply btn banner-glass banner-bad hover:brightness-105;
   }
 
   .btn-icon {
@@ -165,7 +152,7 @@ body {
   }
 
   .field {
-    @apply min-h-12 w-full rounded-xl bg-surface px-4 py-2.5 text-[0.9375rem] text-ink ring-1 ring-inset ring-line
+    @apply glass min-h-12 w-full rounded-2xl px-4 py-2.5 text-[0.9375rem] text-ink ring-1 ring-inset ring-line
            transition-[box-shadow] duration-200 ease-out placeholder:text-ink-3
            focus:outline-none focus:ring-2 focus:ring-accent
            aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-level-high;
@@ -176,13 +163,25 @@ body {
   }
 
   /* ---------- Surfaces ------------------------------------------------ */
+  /* Rounded liquid glass: a translucent tint, blur, a bright top edge. */
+  .glass {
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.075), rgb(255 255 255 / 0.025));
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+    backdrop-filter: blur(22px) saturate(170%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      inset 0 0 0 1px rgb(255 255 255 / 0.06),
+      inset 0 -12px 24px -12px rgb(139 123 255 / 0.08),
+      0 24px 48px -28px rgb(0 0 0 / 0.85);
+  }
+
   .card {
-    @apply rounded-2xl bg-surface shadow-[0_1px_2px_rgb(var(--shadow)/0.04),0_8px_24px_-12px_rgb(var(--shadow)/0.08)] ring-1 ring-inset ring-line;
+    @apply glass rounded-[28px];
   }
 
   /* A card you can press. */
   .tile {
-    @apply rounded-2xl bg-surface shadow-card ring-1 ring-inset ring-line transition-[box-shadow,transform] duration-200 ease-out
+    @apply glass rounded-[22px] transition-[box-shadow,transform] duration-200 ease-out
            hover:shadow-lift active:scale-[0.99];
   }
 
@@ -197,7 +196,7 @@ body {
   }
 
   .chip {
-    @apply inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 text-xs font-medium text-ink-2;
+    @apply glass inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-ink-2;
   }
 
   .kbd {
@@ -211,23 +210,74 @@ body {
     animation: shimmer 1.6s linear infinite;
   }
 
+  /* The iridescent ring: a 1.5px spectrum border drawn with a mask, so it
+     works on any background and any radius. */
+  .iris-ring {
+    position: relative;
+    isolation: isolate;
+  }
+  .iris-ring::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 1.5px;
+    border-radius: inherit;
+    background: var(--iris);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  /* Liquid glass status banners, tinted on the spectrum, dark ink. */
+  .banner-glass {
+    color: #140f2a;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7), inset 0 -10px 18px rgb(20 15 42 / 0.14);
+  }
+  .banner-bad {
+    background: linear-gradient(100deg, #ffb38a, #f3a6c8 55%, #d59cff);
+  }
+  .banner-check {
+    background: linear-gradient(100deg, #d59cff, #b29cff 55%, #8b7bff);
+  }
+  .banner-good {
+    background: linear-gradient(100deg, #5fe3d0, #82c4ff 60%, #a6b4ff);
+  }
+  .banner-neutral {
+    color: rgb(var(--ink));
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.04));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14);
+  }
+
+  /* A soft spectrum glow behind an element. */
+  .iris-glow {
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.04), 0 0 40px -6px rgb(178 156 255 / 0.45), 0 0 80px -20px rgb(255 179 138 / 0.35);
+  }
+  /* Text filled with the spectrum. */
+  .iris-text {
+    background: var(--iris);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
   /* Long-form legal and about copy. */
-  .prose-nourish {
+  .prose-lumen {
     @apply max-w-[66ch] text-[1.0625rem] leading-[1.75] text-ink-2;
   }
-  .prose-nourish h2 {
+  .prose-lumen h2 {
     @apply mb-3 mt-12 font-display text-2xl font-bold tracking-[-0.015em] text-ink;
   }
-  .prose-nourish p {
+  .prose-lumen p {
     @apply mb-5;
   }
-  .prose-nourish ul {
+  .prose-lumen ul {
     @apply mb-5 list-disc space-y-2 pl-5;
   }
-  .prose-nourish a {
+  .prose-lumen a {
     @apply text-accent-ink underline decoration-accent/30 underline-offset-4 hover:decoration-accent;
   }
-  .prose-nourish strong {
+  .prose-lumen strong {
     @apply font-semibold text-ink;
   }
 }
@@ -297,7 +347,7 @@ summary::-webkit-details-marker {
   }
 }
 
-/* ---------- Nourish AI chat ---------- */
+/* ---------- Lumen AI chat ---------- */
 .chat-in {
   animation: chat-in 400ms cubic-bezier(0.23, 1, 0.32, 1) both;
   transform-origin: top left;
@@ -331,7 +381,7 @@ summary::-webkit-details-marker {
 }
 
 /* ---------- Signed-in pages ---------- */
-.nourish-app {
+.lumen-app {
   background-color: rgb(var(--paper));
 }
 .app-page-header {
@@ -372,33 +422,54 @@ summary::-webkit-details-marker {
 
 /* ---------- Scanner ---------- */
 .scanner-workspace {
-  border-radius: 2rem;
+  border-radius: 2.25rem;
   padding: 0.75rem;
-  background: rgb(var(--surface));
-  box-shadow: 0 1px 2px rgb(var(--shadow) / 0.04), inset 0 0 0 1px rgb(var(--line) / 0.7);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.02));
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  backdrop-filter: blur(22px) saturate(170%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12), inset 0 0 0 1px rgb(255 255 255 / 0.06), 0 30px 60px -30px rgb(0 0 0 / 0.9);
 }
 .scan-camera-button {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.875rem;
+  justify-content: flex-end;
+  gap: 0.25rem;
   width: 100%;
-  min-height: 15rem;
+  min-height: 17rem;
   margin-bottom: 0.75rem;
+  padding-bottom: 1.4rem;
   border-radius: 1.5rem;
-  background: rgb(var(--accent));
-  color: rgb(var(--on-accent));
+  background:
+    radial-gradient(60% 55% at 50% 38%, rgb(139 123 255 / 0.28), transparent 70%),
+    radial-gradient(40% 40% at 70% 70%, rgb(255 179 138 / 0.12), transparent 70%),
+    #0d0d11;
+  color: rgb(var(--ink));
   font-family: var(--font-display), var(--font-sans), sans-serif;
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   overflow: hidden;
-  transition: background 0.2s, transform 0.15s;
+  isolation: isolate;
+  transition: transform 0.15s;
 }
-.scan-camera-button:hover {
-  background: rgb(var(--accent-ink));
+.scan-camera-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: var(--iris);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.scan-camera-button:hover::before {
+  opacity: 1;
 }
 .scan-camera-button:active {
   transform: scale(0.99);
@@ -412,7 +483,8 @@ summary::-webkit-details-marker {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 4px;
   padding: 4px;
-  background: rgb(var(--surface-2));
+  background: rgb(0 0 0 / 0.35);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.5), inset 0 0 0 1px rgb(255 255 255 / 0.05);
   border-radius: 999px;
 }
 .scan-switch button {
@@ -435,8 +507,8 @@ summary::-webkit-details-marker {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: rgb(var(--surface));
-  box-shadow: 0 1px 3px rgb(var(--shadow) / 0.1);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.06));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 4px 12px -4px rgb(0 0 0 / 0.6);
 }
 .scan-switch button:focus-visible {
   outline: 2px solid rgb(var(--accent));
@@ -454,9 +526,9 @@ summary::-webkit-details-marker {
   gap: 0.75rem;
   width: 100%;
   min-height: 12rem;
-  border: 1.5px dashed rgb(var(--line-strong));
-  border-radius: 1.5rem;
-  background: rgb(var(--paper));
+  border: 1.5px dashed rgb(255 255 255 / 0.12);
+  border-radius: 1.75rem;
+  background: rgb(0 0 0 / 0.25);
   transition: background 0.2s, border-color 0.2s;
 }
 .scan-upload:hover,
@@ -466,7 +538,7 @@ summary::-webkit-details-marker {
 }
 @media (max-width: 639px) {
   .scan-camera-button {
-    min-height: 12rem;
+    min-height: 14rem;
   }
   .scan-upload {
     min-height: 10rem;

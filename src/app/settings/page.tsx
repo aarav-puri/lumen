@@ -6,6 +6,7 @@ import { KeyRound } from 'lucide-react'
 import { toast } from 'sonner'
 import { SessionEndedError, useAuth } from '@/lib/auth-context'
 import { auth } from '@/lib/supabase'
+import { clearCachedRows } from '@/lib/scans'
 import { getGeminiApiKey, maskKey, setGeminiApiKey } from '@/lib/ai-service'
 import AppShell from '@/components/app/AppShell'
 import PageHeader from '@/components/app/PageHeader'
@@ -200,6 +201,7 @@ function AccountSection() {
   const deleteAccount = async () => {
     setDeleting(true)
     try {
+      clearCachedRows()
       await auth.deleteAccount()
       toast.success('Your account has been deleted')
       router.replace('/')

@@ -112,9 +112,9 @@ function Setup() {
   const slide = reduce ? 0 : 28
 
   return (
-    <div className="nourish-app flex min-h-dvh flex-col">
+    <div className="lumen-app flex min-h-dvh flex-col">
       <header className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between gap-4 px-[var(--gutter)]">
-        <Link href="/" aria-label="Nourish home" className="rounded-md">
+        <Link href="/" aria-label="Lumen home" className="rounded-md">
           <Wordmark />
         </Link>
         {step !== 'done' && (
@@ -149,7 +149,7 @@ function Setup() {
           >
             {step === 'name' && (
               <form id="name-form" onSubmit={submitName} noValidate>
-                <Question eyebrow="Welcome to Nourish" title={<>What should we <em>call</em> you?</>} headingRef={headingRef} />
+                <Question eyebrow="Welcome to Lumen" title={<>What should we <em>call</em> you?</>} headingRef={headingRef} />
                 <label htmlFor="setup-name" className="sr-only">
                   Your name
                 </label>

@@ -8,13 +8,13 @@ export default function PrivacyPage() {
   return (
     <>
       <Navbar />
-      <main id="main" className="mx-auto max-w-3xl px-[var(--gutter)] pb-24 pt-10 sm:pt-16">
+      <main id="main" className="mx-auto max-w-3xl px-[var(--gutter)] pb-24 pt-28 sm:pt-36">
         <p className="t-eyebrow">Legal</p>
         <h1 className="t-title mt-2">Privacy Policy</h1>
-        <div className="prose-nourish mt-8">
+        <div className="prose-lumen mt-8">
           <section>
             <h2>1. Information We Collect</h2>
-            <p>When you use Nourish, we may collect:</p>
+            <p>When you use Lumen, we may collect:</p>
             <ul>
               <li>Account information (email address) when you sign up</li>
               <li>Product barcodes you scan</li>
@@ -80,8 +80,8 @@ export default function PrivacyPage() {
           <section id="gemini-key" className="scroll-mt-24">
             <h2>5. Your Gemini API Key</h2>
             <p>
-              Nourish AI runs on a Google Gemini API key that you add yourself. Your key is stored only in this browser. It is
-              passed to Google with each Nourish AI request and is never saved on our servers. You can remove it at any time in
+              Lumen AI runs on a Google Gemini API key that you add yourself. Your key is stored only in this browser. It is
+              passed to Google with each Lumen AI request and is never saved on our servers. You can remove it at any time in
               Settings.
             </p>
           </section>
@@ -100,7 +100,7 @@ export default function PrivacyPage() {
           <section>
             <h2>7. Age Requirement</h2>
             <p>
-              Nourish is intended for users who are 18 years of age or older. By using our service, you
+              Lumen is intended for users who are 18 years of age or older. By using our service, you
               represent and warrant that you are at least 18 years old. We do not knowingly collect
               personal information from anyone under 18.
             </p>

@@ -20,7 +20,7 @@ const NUTRIENTS = [
 ] as const
 
 /**
- * For products the databases do not know: copy the label in, and Nourish
+ * For products the databases do not know: copy the label in, and Lumen
  * analyzes it the same way. Fields follow the order of a printed label so
  * the eye can run down the package and the form together.
  */
@@ -71,7 +71,7 @@ export default function ManualEntry({ barcode, onDone }: { barcode: string; onDo
     <div className="mx-auto max-w-xl">
       <h1 className="t-title">Enter it from the package</h1>
       <p className="mt-2 leading-relaxed text-ink-2">
-        Copy what is printed on the label. Nourish grades it, checks it against your profile, and keeps it in your history.
+        Copy what is printed on the label. Lumen grades it, checks it against your profile, and keeps it in your history.
         {barcode && (
           <>
             {' '}

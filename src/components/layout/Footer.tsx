@@ -7,11 +7,12 @@ const COLUMNS = [
     links: [
       { href: '/app', text: 'Scanner' },
       { href: '/history', text: 'History' },
+      { href: '/compare', text: 'Compare' },
       { href: '/settings', text: 'Settings' },
     ],
   },
   {
-    label: 'Nourish',
+    label: 'Lumen',
     links: [
       { href: '/about', text: 'About' },
       { href: '/#how', text: 'How it works' },
@@ -52,7 +53,7 @@ export default function Footer() {
         ))}
       </div>
       <div className="mx-auto max-w-6xl border-t border-line px-[var(--gutter)] py-6 text-xs text-ink-3">
-        <p>© {new Date().getFullYear()} Nourish Labs. Product data from Open Food Facts.</p>
+        <p>© {new Date().getFullYear()} Lumen Labs. Product data from Open Food Facts.</p>
       </div>
     </footer>
   )

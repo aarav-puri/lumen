@@ -3,17 +3,20 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { History, LogOut, ScanLine, Settings, type LucideIcon } from 'lucide-react'
+import { Columns2, History, LogOut, ScanLine, Search, Settings, type LucideIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/lib/auth-context'
 import { auth } from '@/lib/supabase'
+import { clearCachedRows } from '@/lib/scans'
 import Wordmark from '@/components/brand/Wordmark'
 import Avatar from '@/components/ui/Avatar'
 import Spinner from '@/components/ui/Spinner'
+import CommandPalette, { openPalette } from '@/components/app/CommandPalette'
 
 const TABS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: '/app', label: 'Scan', icon: ScanLine },
   { href: '/history', label: 'History', icon: History },
+  { href: '/compare', label: 'Compare', icon: Columns2 },
   { href: '/settings', label: 'Settings', icon: Settings },
 ]
 
@@ -46,12 +49,21 @@ export default function AppShell({ children, wide = false }: { children: React.R
   const name: string = user.user_metadata?.display_name || user.email?.split('@')[0] || 'You'
 
   return (
-    <div className="nourish-app min-h-dvh pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0 md:pl-64">
+    <div className="lumen-app min-h-dvh pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0 md:pl-64">
       {/* Desktop: a sidebar with the three destinations and the account. */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-line bg-surface-2/60 px-4 py-5 md:flex">
-        <Link href="/" aria-label="Nourish home" className="mb-8 self-start rounded-md px-2">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-white/[0.06] bg-[#0c0c0f] px-4 py-5 md:flex">
+        <Link href="/" aria-label="Lumen home" className="mb-6 self-start rounded-md px-2">
           <Wordmark />
         </Link>
+        <button
+          type="button"
+          onClick={openPalette}
+          className="mb-5 flex h-10 items-center gap-2.5 rounded-xl bg-white/[0.04] px-3 text-sm text-ink-3 ring-1 ring-inset ring-white/[0.07] transition-colors hover:text-ink-2"
+        >
+          <Search className="h-4 w-4" aria-hidden="true" />
+          Search
+          <kbd className="ml-auto rounded-md bg-surface-3 px-1.5 py-0.5 text-[11px]">⌘K</kbd>
+        </button>
         <nav aria-label="App">
           <ul className="space-y-1">
             {TABS.map((t) => {
@@ -62,7 +74,7 @@ export default function AppShell({ children, wide = false }: { children: React.R
                     href={t.href}
                     aria-current={active ? 'page' : undefined}
                     className={`flex h-11 items-center gap-3 rounded-xl px-3 text-[0.9375rem] font-medium transition-colors ${
-                      active ? 'bg-surface text-accent-ink shadow-card ring-1 ring-inset ring-line' : 'text-ink-2 hover:bg-surface/70 hover:text-ink'
+                      active ? 'bg-white/[0.07] text-ink ring-1 ring-inset ring-white/10' : 'text-ink-3 hover:bg-white/[0.04] hover:text-ink'
                     }`}
                   >
                     <t.icon className="h-5 w-5" strokeWidth={active ? 2.1 : 1.8} aria-hidden="true" />
@@ -81,10 +93,15 @@ export default function AppShell({ children, wide = false }: { children: React.R
       {/* Phone: a slim header with the account. */}
       <header className="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur-xl backdrop-saturate-150 md:hidden">
         <div className="flex h-14 items-center justify-between px-[var(--gutter)]">
-          <Link href="/" aria-label="Nourish home" className="-m-1 rounded-md p-1">
+          <Link href="/" aria-label="Lumen home" className="-m-1 rounded-md p-1">
             <Wordmark />
           </Link>
-          <AccountMenu user={user} name={name} placement="header" />
+          <div className="flex items-center">
+            <button type="button" onClick={openPalette} aria-label="Search" className="btn-icon">
+              <Search className="h-5 w-5" aria-hidden="true" />
+            </button>
+            <AccountMenu user={user} name={name} placement="header" />
+          </div>
         </div>
       </header>
 
@@ -92,12 +109,14 @@ export default function AppShell({ children, wide = false }: { children: React.R
         {children}
       </main>
 
-      {/* Phone tab bar: the three destinations within thumb reach. */}
+      <CommandPalette />
+
+      {/* Phone tab bar: the destinations within thumb reach. */}
       <nav
         aria-label="App"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl backdrop-saturate-150 md:hidden"
       >
-        <ul className="mx-auto grid max-w-md grid-cols-3">
+        <ul className="mx-auto grid max-w-md grid-cols-4">
           {TABS.map((t) => {
             const active = pathname === t.href
             return (
@@ -144,6 +163,7 @@ function AccountMenu({ user, name, placement }: { user: any; name: string; place
     setOpen(false)
     signingOut = true
     try {
+      clearCachedRows()
       await auth.signOut()
       router.replace('/')
     } catch {
