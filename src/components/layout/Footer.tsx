@@ -33,7 +33,7 @@ export default function Footer() {
         <div className="col-span-2 md:col-span-1">
           <Wordmark />
           <p className="mt-4 max-w-[16rem] text-sm leading-relaxed text-ink-3">
-            The fine print, made clear. A guide, not medical advice.
+            The fine print, made clear.
           </p>
         </div>
         {COLUMNS.map((col) => (
