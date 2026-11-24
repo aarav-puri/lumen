@@ -3,19 +3,12 @@
  *
  * The browser's own BarcodeDetector is used wherever it exists (Chrome on
  * Android, most Chromium desktops): it is fast and reads damaged codes well.
- * Elsewhere, notably Safari, Quagga does the work in JavaScript.
+ * Everywhere else, notably Safari and iPhone, the same API comes from
+ * `barcode-detector`, which runs ZXing in WebAssembly. Its .wasm file is
+ * served from /wasm, so scanning never depends on a third-party CDN.
  */
 
-const NATIVE_FORMATS = ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'itf']
-
-export const QUAGGA_READERS = [
-  'ean_reader',
-  'ean_8_reader',
-  'upc_reader',
-  'upc_e_reader',
-  'code_128_reader',
-  'code_39_reader',
-]
+const FORMATS = ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'itf']
 
 /** GTIN check digit (EAN-8, UPC-A, EAN-13, GTIN-14). Codes of other lengths pass. */
 export function isValidGtin(code: string) {
@@ -34,65 +27,57 @@ export function normalizeCode(raw: string) {
   return raw.replace(/\D/g, '')
 }
 
-type NativeDetector = { detect: (src: CanvasImageSource | ImageBitmap) => Promise<{ rawValue: string }[]> }
+export type Detector = { detect: (src: ImageBitmapSource) => Promise<{ rawValue: string }[]> }
 
-let nativePromise: Promise<NativeDetector | null> | null = null
+async function nativeDetector(): Promise<Detector | null> {
+  if (typeof window === 'undefined' || !('BarcodeDetector' in window)) return null
+  try {
+    const BD = (window as any).BarcodeDetector
+    const supported: string[] = await BD.getSupportedFormats()
+    const formats = FORMATS.filter((f) => supported.includes(f))
+    if (!formats.includes('ean_13')) return null
+    return new BD({ formats }) as Detector
+  } catch {
+    return null
+  }
+}
 
-export function getNativeDetector(): Promise<NativeDetector | null> {
-  if (nativePromise) return nativePromise
-  nativePromise = (async () => {
-    if (typeof window === 'undefined' || !('BarcodeDetector' in window)) return null
-    try {
-      const BD = (window as any).BarcodeDetector
-      const supported: string[] = await BD.getSupportedFormats()
-      const formats = NATIVE_FORMATS.filter((f) => supported.includes(f))
-      if (!formats.includes('ean_13')) return null
-      return new BD({ formats }) as NativeDetector
-    } catch {
-      return null
-    }
-  })()
-  return nativePromise
+async function zxingDetector(): Promise<Detector> {
+  const { BarcodeDetector, prepareZXingModule, ZXING_WASM_VERSION } = await import('barcode-detector/ponyfill')
+  // Load the reader now, so a broken download fails here, not on the first frame.
+  await prepareZXingModule({
+    overrides: {
+      locateFile: (path: string, prefix: string) =>
+        path.endsWith('.wasm') ? `/wasm/${path.replace('.wasm', `-${ZXING_WASM_VERSION}.wasm`)}` : prefix + path,
+    },
+    fireImmediately: true,
+  })
+  return new BarcodeDetector({ formats: FORMATS as any }) as unknown as Detector
+}
+
+let detectorPromise: Promise<{ detector: Detector; native: boolean }> | null = null
+
+/** The best reader this browser has, loaded once. */
+export function getDetector() {
+  if (!detectorPromise) {
+    detectorPromise = (async () => {
+      const native = await nativeDetector()
+      if (native) return { detector: native, native: true }
+      return { detector: await zxingDetector(), native: false }
+    })()
+    detectorPromise.catch(() => (detectorPromise = null))
+  }
+  return detectorPromise
 }
 
 /** Reads the first valid barcode in a photo, or null. */
 export async function decodeImage(file: Blob): Promise<string | null> {
-  const native = await getNativeDetector()
-  if (native) {
-    try {
-      const bitmap = await createImageBitmap(file)
-      const results = await native.detect(bitmap)
-      bitmap.close?.()
-      const hit = results.map((r) => normalizeCode(r.rawValue)).find(isValidGtin)
-      if (hit) return hit
-    } catch {
-      /* fall back to Quagga */
-    }
+  const { detector } = await getDetector()
+  const bitmap = await createImageBitmap(file)
+  try {
+    const results = await detector.detect(bitmap)
+    return results.map((r) => normalizeCode(r.rawValue)).find(isValidGtin) ?? null
+  } finally {
+    bitmap.close?.()
   }
-
-  const src = await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result as string)
-    reader.onerror = () => reject(reader.error)
-    reader.readAsDataURL(file)
-  })
-
-  const Quagga = (await import('quagga')).default as any
-  // Try a couple of sizes: Quagga's locator is sensitive to scale.
-  for (const size of [1280, 800]) {
-    const code = await new Promise<string | null>((resolve) => {
-      Quagga.decodeSingle(
-        {
-          src,
-          numOfWorkers: 0,
-          inputStream: { size },
-          decoder: { readers: QUAGGA_READERS },
-          locate: true,
-        },
-        (result: any) => resolve(result?.codeResult?.code ?? null)
-      )
-    })
-    if (code && isValidGtin(normalizeCode(code))) return normalizeCode(code)
-  }
-  return null
 }

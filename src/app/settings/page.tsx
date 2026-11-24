@@ -38,7 +38,7 @@ function Settings() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <PageHeader title="Settings." subtitle="Your account, food profile and Gemini key." />
+      <PageHeader title="Settings." />
       <div className="space-y-10">
         <AccountSection />
         <FoodProfileSection />

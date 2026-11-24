@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { CameraOff, Flashlight, FlashlightOff, Keyboard, X } from 'lucide-react'
-import { QUAGGA_READERS, getNativeDetector, isValidGtin, normalizeCode } from '@/lib/barcode'
+import { getDetector, isValidGtin, normalizeCode } from '@/lib/barcode'
 import Spinner from '@/components/ui/Spinner'
 
 interface Props {
@@ -22,13 +22,12 @@ type Phase = 'starting' | 'scanning' | 'denied' | 'unavailable'
  */
 export default function CameraScanner({ onDetected, onClose, onTypeInstead }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const quaggaTargetRef = useRef<HTMLDivElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
-  const quaggaRef = useRef<any>(null)
   const doneRef = useRef(false)
   const lastRef = useRef<{ code: string; hits: number }>({ code: '', hits: 0 })
   const [phase, setPhase] = useState<Phase>('starting')
-  const [engine, setEngine] = useState<'native' | 'quagga' | null>(null)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
   const [torch, setTorch] = useState<{ supported: boolean; on: boolean }>({ supported: false, on: false })
 
   const onDetectedRef = useRef(onDetected)
@@ -52,15 +51,6 @@ export default function CameraScanner({ onDetected, onClose, onTypeInstead }: Pr
   const stop = useCallback(() => {
     streamRef.current?.getTracks().forEach((t) => t.stop())
     streamRef.current = null
-    if (quaggaRef.current) {
-      try {
-        quaggaRef.current.offDetected()
-        quaggaRef.current.stop()
-      } catch {
-        /* already stopped */
-      }
-      quaggaRef.current = null
-    }
   }, [])
 
   useEffect(() => {
@@ -73,80 +63,51 @@ export default function CameraScanner({ onDetected, onClose, onTypeInstead }: Pr
       setPhase(name === 'NotAllowedError' || name === 'SecurityError' ? 'denied' : 'unavailable')
     }
 
+    // One path for every browser: open the camera ourselves into a plain
+    // <video playsinline muted>, which iPhone and Safari render reliably,
+    // then read frames with the best detector this browser has.
     const start = async () => {
       if (!navigator.mediaDevices?.getUserMedia) return fail({ name: 'NotSupported' })
+      try {
+        // Ask for the camera first, so the permission prompt appears at once,
+        // while the barcode reader loads in parallel.
+        const readerPromise = getDetector()
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+          audio: false,
+        })
+        if (cancelled) return stream.getTracks().forEach((t) => t.stop())
+        streamRef.current = stream
+        const video = videoRef.current!
+        video.srcObject = stream
+        await video.play()
+        detectTorch(stream.getVideoTracks()[0])
+        setPhase('scanning')
 
-      const native = await getNativeDetector()
-      if (cancelled) return
-
-      if (native) {
-        setEngine('native')
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
-            audio: false,
-          })
-          if (cancelled) return stream.getTracks().forEach((t) => t.stop())
-          streamRef.current = stream
-          const video = videoRef.current!
-          video.srcObject = stream
-          await video.play()
-          detectTorch(stream.getVideoTracks()[0])
-          setPhase('scanning')
-
-          let last = 0
-          const tick = async (t: number) => {
-            if (cancelled || doneRef.current) return
-            if (t - last > 120 && video.readyState >= 2) {
-              last = t
-              try {
-                const results = await native.detect(video)
-                for (const r of results) consider(r.rawValue, 2)
-              } catch {
-                /* a dropped frame */
-              }
+        const { detector, native } = await readerPromise
+        if (cancelled) return
+        // The WebAssembly reader is slower than the built-in one, so it reads
+        // a little less often. Both need two matching frames.
+        const every = native ? 120 : 200
+        const need = 2
+        let last = 0
+        let busy = false
+        const tick = async (t: number) => {
+          if (cancelled || doneRef.current) return
+          if (!busy && t - last > every && video.readyState >= 2) {
+            last = t
+            busy = true
+            try {
+              const results = await detector.detect(video)
+              for (const r of results) consider(r.rawValue, need)
+            } catch {
+              /* a dropped frame */
             }
-            raf = requestAnimationFrame(tick)
+            busy = false
           }
           raf = requestAnimationFrame(tick)
-        } catch (err) {
-          fail(err)
         }
-        return
-      }
-
-      setEngine('quagga')
-      try {
-        const Quagga = (await import('quagga')).default as any
-        if (cancelled) return
-        Quagga.init(
-          {
-            inputStream: {
-              type: 'LiveStream',
-              target: quaggaTargetRef.current,
-              constraints: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
-              area: { top: '30%', right: '8%', left: '8%', bottom: '30%' },
-            },
-            locator: { patchSize: 'medium', halfSample: true },
-            numOfWorkers: Math.min(4, navigator.hardwareConcurrency || 2),
-            frequency: 12,
-            decoder: { readers: QUAGGA_READERS },
-            locate: true,
-          },
-          (err: any) => {
-            if (cancelled) return
-            if (err) return fail(err)
-            quaggaRef.current = Quagga
-            Quagga.start()
-            const track = Quagga.CameraAccess?.getActiveTrack?.()
-            if (track) detectTorch(track)
-            setPhase('scanning')
-          }
-        )
-        Quagga.onDetected((result: any) => {
-          const code = result?.codeResult?.code
-          if (code) consider(code, 3)
-        })
+        raf = requestAnimationFrame(tick)
       } catch (err) {
         fail(err)
       }
@@ -178,8 +139,7 @@ export default function CameraScanner({ onDetected, onClose, onTypeInstead }: Pr
   }, [onClose])
 
   const toggleTorch = async () => {
-    const track: MediaStreamTrack | undefined =
-      streamRef.current?.getVideoTracks()[0] ?? quaggaRef.current?.CameraAccess?.getActiveTrack?.()
+    const track: MediaStreamTrack | undefined = streamRef.current?.getVideoTracks()[0]
     if (!track) return
     try {
       await track.applyConstraints({ advanced: [{ torch: !torch.on } as any] })
@@ -189,7 +149,7 @@ export default function CameraScanner({ onDetected, onClose, onTypeInstead }: Pr
     }
   }
 
-  if (typeof document === 'undefined') return null
+  if (!mounted) return null
 
   return createPortal(
     <div
@@ -200,18 +160,7 @@ export default function CameraScanner({ onDetected, onClose, onTypeInstead }: Pr
     >
       {/* Camera feed */}
       <div className="absolute inset-0 overflow-hidden">
-        <video
-          ref={videoRef}
-          playsInline
-          muted
-          className={`h-full w-full object-cover ${engine === 'native' ? '' : 'hidden'}`}
-        />
-        <div
-          ref={quaggaTargetRef}
-          className={`h-full w-full [&_canvas]:hidden [&_video]:h-full [&_video]:w-full [&_video]:object-cover ${
-            engine === 'quagga' ? '' : 'hidden'
-          }`}
-        />
+        <video ref={videoRef} playsInline muted autoPlay className="h-full w-full object-cover" />
       </div>
 
       {/* Top bar */}
