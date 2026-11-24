@@ -53,7 +53,7 @@ export default function Footer() {
         ))}
       </div>
       <div className="mx-auto max-w-6xl border-t border-line px-[var(--gutter)] py-6 text-xs text-ink-3">
-        <p>© {new Date().getFullYear()} Lumen Labs. Product data from Open Food Facts.</p>
+        <p>© {new Date().getFullYear()} Lumen.</p>
       </div>
     </footer>
   )

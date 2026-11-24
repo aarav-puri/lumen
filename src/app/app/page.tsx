@@ -17,9 +17,9 @@ import AppShell from '@/components/app/AppShell'
 import CameraScanner from '@/components/app/CameraScanner'
 import ManualEntry from '@/components/app/ManualEntry'
 import ScannerHome from '@/components/app/ScannerHome'
+import ScanCheck from '@/components/app/ScanCheck'
 import ProductReport from '@/components/product/ProductReport'
 import Button from '@/components/ui/Button'
-import Spinner from '@/components/ui/Spinner'
 
 const cache = productCache
 
@@ -334,49 +334,31 @@ function StateCard({
 }
 
 function LoadingReport({ code, onCancel }: { code: string; onCancel: () => void }) {
+  const { profile } = useAuth()
   const [slow, setSlow] = useState(false)
   useEffect(() => {
     const t = setTimeout(() => setSlow(true), 6000)
     return () => clearTimeout(t)
   }, [])
+  const count = profile.diets.length + profile.avoid.length
 
   return (
     <div role="status" aria-live="polite">
       <BackBar onBack={onCancel} />
       <span className="sr-only">Looking up {code}</span>
-      <div className="flex items-start gap-5" aria-hidden="true">
-        <div className="skeleton h-20 w-20 rounded-xl sm:h-24 sm:w-24" />
-        <div className="flex-1 space-y-3 pt-1">
-          <div className="skeleton h-4 w-24" />
-          <div className="skeleton h-8 w-3/4" />
-          <div className="skeleton h-3 w-32" />
-        </div>
+      <div className="mx-auto flex max-w-md flex-col items-center py-6 text-center sm:py-10">
+        <ScanCheck profile={profile} />
+        <p className="mt-8 text-lg font-medium tracking-[-0.01em] text-ink">
+          {slow ? 'Still working.' : <>Looking up <span className="tnum">{code}</span></>}
+        </p>
+        <p className="mt-1.5 text-sm text-ink-3">
+          {slow
+            ? 'The food database is slow right now.'
+            : count
+              ? `Checking it against your ${count} ${count === 1 ? 'preference' : 'diets and allergens'}.`
+              : 'Reading the label and ingredients.'}
+        </p>
       </div>
-      <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-6" aria-hidden="true">
-        <div className="space-y-4">
-          <div className="card h-56 p-6">
-            <div className="skeleton h-3 w-20" />
-            <div className="mt-6 flex gap-1">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <div key={i} className="skeleton h-10 w-8" />
-              ))}
-            </div>
-            <div className="skeleton mt-6 h-3 w-4/5" />
-          </div>
-          <div className="card h-28" />
-        </div>
-        <div className="card h-80 p-6">
-          <div className="skeleton h-6 w-28" />
-          <div className="mt-3 h-[6px] bg-ink/10" />
-          {[0, 1, 2, 3, 4].map((i) => (
-            <div key={i} className="skeleton mt-5 h-3" />
-          ))}
-        </div>
-      </div>
-      <p className="mt-6 flex items-center gap-2 text-sm text-ink-2">
-        <Spinner />
-        {slow ? 'Still working. The food database is slow right now.' : <>Looking up <span className="tnum">{code}</span></>}
-      </p>
     </div>
   )
 }
