@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GEMINI_LITE } from '@/lib/gemini-models'
+import { nourishSystemPrompt } from '@/lib/nourish-ai-prompt'
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,30 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Build system prompt with context from scan history
-    let systemPrompt = `You are Nourish AI, the friendly in-app food guide for Nourish, a food scanning app. If asked your name, you are Nourish AI. You help users understand their scanned products and make healthier choices.
-
-You have access to the user's scan history including:
-- Product names, barcodes, ingredients, and nutrition information
-
-IMPORTANT FORMATTING RULES:
-- Write in clean, professional prose without any markdown formatting
-- Do NOT use asterisks, bold text, or special formatting characters
-- Do NOT use bullet points with dashes or asterisks
-- Use simple numbered lists when needed (1., 2., 3.)
-- Write naturally as if speaking to someone in person
-- Keep responses SHORT and CONCISE - 2-3 sentences maximum
-- Get straight to the point without unnecessary details
-
-When answering questions:
-- Be brief and direct
-- Reference specific products from their history when relevant
-- Provide actionable insights
-- Use a friendly, conversational tone
-- If asked about products they haven't scanned, politely let them know you can only see their scan history`
-
-    if (context) {
-      systemPrompt += `\n\nUser's Scan History:\n${JSON.stringify(context, null, 2)}`
-    }
+    const systemPrompt = nourishSystemPrompt(context)
 
     const response = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
       method: 'POST',

@@ -2,15 +2,6 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import {
-  CircleCheck,
-  CircleDashed,
-  ShieldAlert,
-  ShieldCheck,
-  ShieldQuestion,
-  TriangleAlert,
-  type LucideIcon,
-} from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import {
   GRADE_INFO,
@@ -55,15 +46,15 @@ export default function ProductReport({ food, actions }: { food: Food; actions?:
 
 function ProductHeader({ food, actions }: { food: Food; actions?: React.ReactNode }) {
   return (
-    <header className="card flex items-start gap-4 p-5 sm:gap-5 sm:p-6">
+    <header className="flex items-start gap-4 px-1 sm:gap-5">
       <div className="min-w-0 flex-1">
         {food.brand && food.brand.toLowerCase() !== food.name.toLowerCase() && (
           <p className="truncate text-sm font-medium text-ink-2">{food.brand}</p>
         )}
-        <h1 id="product-name" className="mt-0.5 font-display font-bold text-[1.55rem] leading-[1.1] tracking-[-0.015em] text-balance sm:text-[2rem]">
+        <h1 id="product-name" className="mt-1 text-balance text-[2rem] font-display font-bold leading-[1.02] tracking-[-0.02em] sm:text-[2.75rem]">
           {food.name}
         </h1>
-        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-ink-3">
+        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 tnum text-xs text-ink-3">
           {food.quantity && <span>{food.quantity}</span>}
           {food.barcode && <span>{food.barcode}</span>}
           {food.manual && <span>Entered by hand</span>}
@@ -79,7 +70,7 @@ function ProductHeader({ food, actions }: { food: Food; actions?: React.ReactNod
 function Verdict({ food, points }: { food: Food; points: ReturnType<typeof keyPoints> }) {
   const info = food.grade ? GRADE_INFO[food.grade] : null
   return (
-    <section aria-labelledby="verdict-h" className="card overflow-hidden bg-accent-soft/30">
+    <section aria-labelledby="verdict-h" className="card overflow-hidden">
       <div className="p-5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <h2 id="verdict-h" className="t-eyebrow">
@@ -91,7 +82,7 @@ function Verdict({ food, points }: { food: Food; points: ReturnType<typeof keyPo
           <div className="min-w-[14rem] flex-1">
             <ScoreMeter grade={food.grade} score={food.score} />
           </div>
-          {info && <p className="font-display font-bold text-3xl leading-none">{info.label}</p>}
+          {info && <p className="text-3xl font-semibold leading-none tracking-[-0.035em]">{info.label}</p>}
         </div>
         <p className="mt-4 text-sm leading-relaxed text-ink-2">
           {info
@@ -133,46 +124,19 @@ function Verdict({ food, points }: { food: Food; points: ReturnType<typeof keyPo
 
 /* ---------- For you --------------------------------------------------- */
 
-const STATUS: Record<CheckStatus, { title: string; icon: LucideIcon; banner: string; dot: LucideIcon; dotClass: string }> = {
-  conflict: {
-    title: 'Does not fit your profile',
-    icon: ShieldAlert,
-    banner: 'bg-[#B8340D] text-white',
-    dot: TriangleAlert,
-    dotClass: 'text-level-high',
-  },
-  caution: {
-    title: 'Check the package before buying',
-    icon: ShieldQuestion,
-    banner: 'bg-level-moderate text-[#2b2200]',
-    dot: TriangleAlert,
-    dotClass: 'text-[rgb(var(--level-moderate))]',
-  },
-  unknown: {
-    title: 'Mostly fits, some unknowns',
-    icon: ShieldQuestion,
-    banner: 'bg-surface-3 text-ink',
-    dot: CircleDashed,
-    dotClass: 'text-ink-3',
-  },
-  ok: {
-    title: 'Fits your profile',
-    icon: ShieldCheck,
-    banner: 'bg-[#16703C] text-white',
-    dot: CircleCheck,
-    dotClass: 'text-level-low',
-  },
+const STATUS: Record<CheckStatus, { title: string; banner: string; dot: string }> = {
+  conflict: { title: 'Does not fit your profile', banner: 'bg-[#d70015] text-white', dot: 'bg-level-high' },
+  caution: { title: 'Check the package before buying', banner: 'bg-surface-3 text-ink', dot: 'bg-level-moderate' },
+  unknown: { title: 'Mostly fits, some unknowns', banner: 'bg-surface-3 text-ink', dot: 'bg-ink-3' },
+  ok: { title: 'Fits your profile', banner: 'bg-[#16703c] text-white', dot: 'bg-level-low' },
 }
 
 function ForYou({ checks, profileEmpty }: { checks: Check[]; profileEmpty: boolean }) {
   if (profileEmpty) {
     return (
-      <section aria-labelledby="foryou-h" className="card flex items-start gap-4 p-5">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
-          <ShieldCheck className="h-5 w-5" aria-hidden="true" />
-        </span>
+      <section aria-labelledby="foryou-h" className="card p-5 sm:p-6">
         <div className="min-w-0">
-          <h2 id="foryou-h" className="font-semibold">
+          <h2 id="foryou-h" className="font-display font-bold">
             Get warnings made for you
           </h2>
           <p className="mt-1 text-sm leading-relaxed text-ink-2">
@@ -190,9 +154,8 @@ function ForYou({ checks, profileEmpty }: { checks: Check[]; profileEmpty: boole
   const s = STATUS[status]
   return (
     <section aria-labelledby="foryou-h" className="card overflow-hidden">
-      <div className={`flex items-center gap-3 px-5 py-3.5 ${s.banner}`}>
-        <s.icon className="h-5 w-5 shrink-0" aria-hidden="true" />
-        <h2 id="foryou-h" className="font-semibold">
+      <div className={`px-5 py-3.5 ${s.banner}`}>
+        <h2 id="foryou-h" className="font-display font-bold">
           {s.title}
         </h2>
       </div>
@@ -201,7 +164,7 @@ function ForYou({ checks, profileEmpty }: { checks: Check[]; profileEmpty: boole
           const cs = STATUS[c.status]
           return (
             <li key={c.key} className="flex items-start gap-3 px-5 py-3">
-              <cs.dot className={`mt-0.5 h-4 w-4 shrink-0 ${cs.dotClass}`} aria-hidden="true" />
+              <span className={`mt-[7px] h-2 w-2 shrink-0 rounded-full ${cs.dot}`} aria-hidden="true" />
               <div className="min-w-0 text-sm">
                 <p className="font-medium">{c.title}</p>
                 {c.detail && <p className="mt-0.5 text-ink-2">{c.detail}</p>}
@@ -249,10 +212,10 @@ function NutritionPanel({ food }: { food: Food }) {
   return (
     <section aria-labelledby="nutrition-h" className="card p-5 sm:p-6">
       <div className="flex items-baseline justify-between gap-4">
-        <h2 id="nutrition-h" className="text-2xl font-black tracking-tight">
+        <h2 id="nutrition-h" className="text-2xl font-display font-bold tracking-[-0.02em]">
           Nutrition
         </h2>
-        <span className="font-mono text-xs text-ink-3">per {unit}</span>
+        <span className="tnum text-xs text-ink-3">per {unit}</span>
       </div>
       <div className="rule-heavy mt-2" aria-hidden="true" />
 
@@ -261,8 +224,8 @@ function NutritionPanel({ food }: { food: Food }) {
       ) : (
         <>
           <div className="flex items-baseline justify-between border-b-[3px] border-ink py-2.5">
-            <span className="font-bold">Energy</span>
-            <span className="tnum font-mono text-lg font-semibold">
+            <span className="font-semibold">Energy</span>
+            <span className="tnum tnum text-lg font-semibold">
               {n.energyKcal !== undefined ? `${n.energyKcal} kcal` : '–'}
             </span>
           </div>
@@ -291,7 +254,7 @@ function NutritionPanel({ food }: { food: Food }) {
                         </span>
                       )}
                     </th>
-                    <td className="tnum py-2.5 text-right align-top font-mono">
+                    <td className="tnum py-2.5 text-right align-top tnum">
                       {r.value !== undefined ? `${fmt(r.value, r.digits ?? 1)}g` : '–'}
                     </td>
                     <td className="w-20 py-2.5 pl-3 text-right align-top">
@@ -325,7 +288,7 @@ function Processing({ food }: { food: Food }) {
         <div className="p-5 sm:px-6">
           <div className="flex items-center justify-between gap-3">
             <h2 className="t-eyebrow">Processing</h2>
-            <span className="font-mono text-xs text-ink-3">NOVA {food.nova} of 4</span>
+            <span className="tnum text-xs text-ink-3">NOVA {food.nova} of 4</span>
           </div>
           <p className="mt-2 font-semibold">{NOVA_INFO[food.nova].label}</p>
           <p className="mt-0.5 text-sm text-ink-2">{NOVA_INFO[food.nova].detail}</p>
@@ -346,12 +309,12 @@ function Processing({ food }: { food: Food }) {
         <div className="p-5 sm:px-6">
           <div className="flex items-center justify-between gap-3">
             <h2 className="t-eyebrow">Additives</h2>
-            <span className="font-mono text-xs text-ink-3">{food.additives.length}</span>
+            <span className="tnum text-xs text-ink-3">{food.additives.length}</span>
           </div>
           <ul className="mt-3 flex flex-wrap gap-1.5">
             {food.additives.map((a) => (
               <li key={a.code} className="chip">
-                <span className="font-mono text-[11px] text-ink-3">{a.code}</span>
+                <span className="tnum text-[11px] text-ink-3">{a.code}</span>
                 {a.name && <span className="text-ink">{a.name}</span>}
               </li>
             ))}
@@ -401,7 +364,7 @@ function Ingredients({ food }: { food: Food }) {
         <h2 id="ingredients-h" className="t-eyebrow">
           Ingredients
         </h2>
-        <span className="font-mono text-xs text-ink-3">{food.ingredients.length}</span>
+        <span className="tnum text-xs text-ink-3">{food.ingredients.length}</span>
       </div>
       <ol className="mt-3 text-sm leading-7">
         {shown.map((ing, i) => (

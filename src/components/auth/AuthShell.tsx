@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ReactNode } from 'react'
 import Wordmark from '@/components/brand/Wordmark'
+import { Phone } from '@/components/home/Phone'
 
 interface AuthShellProps {
   eyebrow: string
@@ -12,13 +13,13 @@ interface AuthShellProps {
 }
 
 /**
- * The shared frame for sign in and sign up: the form on
- * paper, and on wide screens a reminder of what is on the other side.
+ * The shared frame for sign in and sign up: the form on the left, and on
+ * wide screens the thing it unlocks, a Nourish report on a phone.
  */
 export default function AuthShell({ eyebrow, title, lede, children, footer }: AuthShellProps) {
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
-      <main id="main" className="flex flex-col px-[var(--gutter)] py-6 sm:py-8">
+      <main id="main" className="flex flex-col px-[var(--gutter)] py-5">
         <Link href="/" aria-label="Nourish home" className="self-start rounded-md">
           <Wordmark />
         </Link>
@@ -26,18 +27,21 @@ export default function AuthShell({ eyebrow, title, lede, children, footer }: Au
         <div className="mx-auto flex w-full max-w-[24rem] flex-1 flex-col justify-center py-12">
           <p className="t-eyebrow">{eyebrow}</p>
           <h1 className="t-title mt-2">{title}</h1>
-          {lede && <p className="mt-3 leading-relaxed text-ink-2">{lede}</p>}
+          {lede && <p className="mt-3 text-[1.0625rem] leading-relaxed text-ink-2">{lede}</p>}
           {children}
           <div className="mt-8 text-sm text-ink-2">{footer}</div>
         </div>
       </main>
 
-      <aside aria-hidden="true" className="relative m-4 hidden overflow-hidden rounded-3xl border border-accent/10 bg-accent-soft/60 lg:flex lg:items-center lg:justify-center">
-        <div className="flex w-full max-w-sm flex-col items-center px-8 py-10">
-          <p className="text-center font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-ink">
-            Food choices that feel a little more <em className="not-italic text-accent-ink">you</em>.
-          </p>
-        </div>
+      <aside
+        aria-hidden="true"
+        className="relative m-3 hidden flex-col items-center justify-end overflow-hidden rounded-[36px] bg-surface-2/80 px-10 pt-16 lg:flex"
+      >
+        <p className="max-w-[14ch] text-balance text-center text-[2rem] font-semibold leading-[1.05] tracking-[-0.04em]">
+          The fine print, made clear.
+        </p>
+        <p className="mt-3 text-center text-ink-3">Every scan, checked against your diet.</p>
+        <Phone screen="report" className="-mb-40 mt-12" />
       </aside>
     </div>
   )

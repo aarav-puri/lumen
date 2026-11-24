@@ -244,7 +244,7 @@ export default function CameraScanner({ onDetected, onClose, onTypeInstead }: Pr
         {phase === 'denied' || phase === 'unavailable' ? (
           <div className="max-w-xs text-center">
             <CameraOff className="mx-auto h-8 w-8 text-white/70" aria-hidden="true" />
-            <h2 className="mt-4 text-lg font-semibold">
+            <h2 className="mt-4 text-lg font-display font-bold">
               {phase === 'denied' ? 'Camera access is off' : 'No camera available'}
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-white/70">

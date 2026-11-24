@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Camera, Search, ShieldAlert, Trash2, X } from 'lucide-react'
+import { Camera, Search, Trash2, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { db } from '@/lib/supabase'
 import { useAuth } from '@/lib/auth-context'
@@ -266,10 +266,9 @@ function History() {
                   </button>
                 )}
               </div>
-              {/* A pressed-in track with the chosen filter raised out of it. The
-                  scroller is padded so no shadow is clipped at its edges. */}
+              {/* A segmented control; the scroller is padded so the shadow is not clipped. */}
               <div className="-m-3 overflow-x-auto p-3">
-                <div className="inline-flex gap-1 rounded-full bg-paper p-1.5 shadow-neu-inset-sm" role="radiogroup" aria-label="Filter by grade">
+                <div className="inline-flex gap-1 rounded-full bg-surface-2 p-1" role="radiogroup" aria-label="Filter by grade">
                 {FILTERS.filter((f) => f.id !== 'conflict' || !profileEmpty).map((f) => (
                   <button
                     key={f.id}
@@ -278,7 +277,7 @@ function History() {
                     aria-checked={filter === f.id}
                     onClick={() => setFilter(f.id)}
                     className={`h-9 shrink-0 whitespace-nowrap rounded-full px-4 text-sm font-medium transition-[color,box-shadow] duration-300 ease-out ${
-                      filter === f.id ? 'bg-paper text-ink shadow-neu-sm' : 'text-ink-3 hover:text-ink'
+                      filter === f.id ? 'bg-surface text-ink shadow-[0_1px_3px_rgb(var(--shadow)/0.1)]' : 'text-ink-2 hover:text-ink'
                     }`}
                   >
                     {f.label}
@@ -321,7 +320,7 @@ function History() {
                             <span className="flex items-center gap-2">
                               <span className="truncate font-medium">{e.food.name}</span>
                               {e.conflict && (
-                                <ShieldAlert className="h-4 w-4 shrink-0 text-level-high" aria-label="Does not fit your profile" />
+                                <span className="h-2 w-2 shrink-0 rounded-full bg-level-high" role="img" aria-label="Does not fit your profile" />
                               )}
                             </span>
                             <span className="mt-0.5 block truncate text-sm text-ink-3">
@@ -393,10 +392,10 @@ function GradeMix({ counts, total }: { counts: Record<Grade | 'none', number>; t
     <section aria-label="Grade mix" className="card mt-6 p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <p className="text-sm text-ink-2">
-          <span className="font-display font-bold text-2xl text-ink">{pct}%</span>
+          <span className="font-semibold tracking-[-0.03em] text-2xl text-ink">{pct}%</span>
           <span className="ml-2">of what you scan scores 60 or higher</span>
         </p>
-        <span className="font-mono text-xs text-ink-3">{graded} scored</span>
+        <span className="tnum text-xs text-ink-3">{graded} scored</span>
       </div>
       <div className="mt-4 flex h-3 overflow-hidden rounded-full" role="img" aria-label={(['a', 'b', 'c', 'd', 'e'] as Grade[]).map((g) => `${SCORE_BANDS[g][0]} to ${SCORE_BANDS[g][1]}: ${counts[g]}`).join(', ')}>
         {(['a', 'b', 'c', 'd', 'e'] as Grade[]).map((g) =>
@@ -405,7 +404,7 @@ function GradeMix({ counts, total }: { counts: Record<Grade | 'none', number>; t
       </div>
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
         {(['a', 'b', 'c', 'd', 'e'] as Grade[]).map((g) => (
-          <span key={g} className="flex items-center gap-1.5 font-mono text-xs text-ink-3">
+          <span key={g} className="flex items-center gap-1.5 tnum text-xs text-ink-3">
             <span className={`h-2 w-2 rounded-full ${GRADE_STYLE[g].split(' ')[0]}`} aria-hidden="true" />
             {SCORE_BANDS[g][0]}–{SCORE_BANDS[g][1]}: {counts[g]}
           </span>
@@ -421,7 +420,7 @@ function EmptyHistory() {
       <span className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-2">
         <Camera className="h-5 w-5 text-ink-2" aria-hidden="true" />
       </span>
-      <h2 className="mt-4 font-display font-bold text-xl">Your scans will collect here</h2>
+      <h2 className="mt-4 font-display font-bold tracking-[-0.02em] text-xl">Your scans will collect here</h2>
       <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink-2">
         Every product you scan is saved with its grade, so you can compare, search, and ask questions about them later.
       </p>

@@ -32,7 +32,7 @@ export default function AboutPage() {
           </div>
 
           <div className="prose-nourish mt-10 text-[1.0625rem] leading-8">
-            <blockquote className="border-l-2 border-accent pl-5 font-display text-xl leading-relaxed text-ink sm:text-2xl sm:leading-relaxed">
+            <blockquote className="mb-10 border-l-2 border-accent pl-5 text-xl font-medium leading-snug tracking-[-0.02em] text-ink sm:text-2xl sm:leading-snug">
               &ldquo;My dad is vegetarian, and I kept noticing how often packaged food quietly includes things that do
               not fit. I wanted a scan to tell us, instantly.&rdquo;
             </blockquote>
@@ -53,7 +53,7 @@ export default function AboutPage() {
           </div>
 
           <div className="mt-14 flex flex-col items-start gap-4 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
-            <p className="font-display font-bold text-xl">Try it on whatever is in your kitchen.</p>
+            <p className="font-semibold tracking-[-0.03em] text-xl">Try it on whatever is in your kitchen.</p>
             <Link href="/app" className="btn-primary group h-12 px-6">
               Start scanning
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />

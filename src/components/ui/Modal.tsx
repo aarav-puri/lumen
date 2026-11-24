@@ -120,8 +120,8 @@ export default function Modal({ isOpen, onClose, title, description, label, chil
         aria-describedby={description ? descId : undefined}
         aria-label={!title ? label : undefined}
         tabIndex={-1}
-        className={`relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-3xl bg-paper shadow-neu
-          transition-[opacity,transform] duration-200 ease-out focus:outline-none sm:max-h-[85dvh] sm:rounded-3xl ${SIZES[size]} ${
+        className={`relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-[28px] bg-surface shadow-pop
+          transition-[opacity,transform] duration-200 ease-out focus:outline-none sm:max-h-[85dvh] sm:rounded-[28px] ${SIZES[size]} ${
             shown ? 'translate-y-0 opacity-100 sm:scale-100' : 'translate-y-full opacity-100 sm:translate-y-2 sm:scale-[0.98] sm:opacity-0'
           }`}
       >
@@ -132,7 +132,7 @@ export default function Modal({ isOpen, onClose, title, description, label, chil
         <div className={`flex shrink-0 items-start gap-4 px-5 sm:px-6 ${title ? 'justify-between pb-3 pt-3 sm:pt-5' : 'justify-end pt-2 sm:pt-4'}`}>
           {title && (
             <div className="min-w-0">
-              <h2 id={titleId} className="text-lg font-semibold tracking-tight">
+              <h2 id={titleId} className="text-lg font-display font-bold tracking-tight">
                 {title}
               </h2>
               {description && (
@@ -150,7 +150,7 @@ export default function Modal({ isOpen, onClose, title, description, label, chil
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-5 sm:px-6 sm:pb-6">{children}</div>
 
         {footer && (
-          <div className="shrink-0 bg-paper px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6">
+          <div className="shrink-0 border-t border-line bg-surface px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6">
             {footer}
           </div>
         )}

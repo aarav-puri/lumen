@@ -6,7 +6,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
   error?: string
   /** Persistent guidance below the field. It survives typing, unlike a placeholder. */
-  hint?: string
+  hint?: React.ReactNode
   icon?: React.ReactNode
   /** Rendered inside the field on the right, such as a show-password toggle. */
   trailing?: React.ReactNode

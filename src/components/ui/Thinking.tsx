@@ -20,7 +20,7 @@ export default function Thinking({ label, className = '' }: { label: string; cla
     <span role="status" className={`inline-flex items-center gap-2.5 text-sm ${className}`}>
       <PixelGrid />
       <span className="thinking-shimmer font-medium">{label}</span>
-      <span className="tnum font-mono text-xs text-ink-3">{((now - start) / 1000).toFixed(1)}s</span>
+      <span className="tnum tnum text-xs text-ink-3">{((now - start) / 1000).toFixed(1)}s</span>
     </span>
   )
 }

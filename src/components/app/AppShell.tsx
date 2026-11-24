@@ -42,51 +42,60 @@ export default function AppShell({ children, wide = false }: { children: React.R
     )
   }
 
-  const width = wide ? 'max-w-6xl' : 'max-w-4xl'
+  const width = wide ? 'max-w-5xl' : 'max-w-3xl'
+  const name: string = user.user_metadata?.display_name || user.email?.split('@')[0] || 'You'
 
   return (
-    <div className="nourish-app min-h-dvh pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0">
-      <header className="sticky top-0 z-40 border-b border-line/70 bg-surface/85 shadow-[0_8px_16px_-12px_rgb(var(--sh-dark)/var(--sh-dark-a))] backdrop-blur-md supports-[backdrop-filter]:bg-paper/75">
-        <div className="mx-auto flex h-20 max-w-6xl items-center justify-between gap-4 px-[var(--gutter)]">
-          <Link href="/" aria-label="Nourish home" className="-m-1 rounded-md p-1">
-            <Wordmark byline />
-          </Link>
-
-          <nav aria-label="App" className="hidden items-center gap-1 rounded-full border border-line bg-surface/75 p-1 md:flex">
+    <div className="nourish-app min-h-dvh pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0 md:pl-64">
+      {/* Desktop: a sidebar with the three destinations and the account. */}
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-line bg-surface-2/60 px-4 py-5 md:flex">
+        <Link href="/" aria-label="Nourish home" className="mb-8 self-start rounded-md px-2">
+          <Wordmark />
+        </Link>
+        <nav aria-label="App">
+          <ul className="space-y-1">
             {TABS.map((t) => {
               const active = pathname === t.href
               return (
-                <Link
-                  key={t.href}
-                  href={t.href}
-                  aria-current={active ? 'page' : undefined}
-                  className={`inline-flex h-10 items-center gap-2 rounded-full px-5 text-sm font-medium transition-colors ${
-                    active ? 'bg-accent-soft text-accent-ink' : 'text-ink-2 hover:bg-ink/[0.04] hover:text-ink'
-                  }`}
-                >
-                  <t.icon className="h-4 w-4" aria-hidden="true" />
-                  {t.label}
-                </Link>
+                <li key={t.href}>
+                  <Link
+                    href={t.href}
+                    aria-current={active ? 'page' : undefined}
+                    className={`flex h-11 items-center gap-3 rounded-xl px-3 text-[0.9375rem] font-medium transition-colors ${
+                      active ? 'bg-surface text-accent-ink shadow-card ring-1 ring-inset ring-line' : 'text-ink-2 hover:bg-surface/70 hover:text-ink'
+                    }`}
+                  >
+                    <t.icon className="h-5 w-5" strokeWidth={active ? 2.1 : 1.8} aria-hidden="true" />
+                    {t.label}
+                  </Link>
+                </li>
               )
             })}
-            <span className="mx-2 h-5 w-px bg-line" aria-hidden="true" />
-            <AccountMenu user={user} />
-          </nav>
+          </ul>
+        </nav>
+        <div className="mt-auto">
+          <AccountMenu user={user} name={name} placement="sidebar" />
+        </div>
+      </aside>
 
-          <div className="md:hidden">
-            <AccountMenu user={user} />
-          </div>
+      {/* Phone: a slim header with the account. */}
+      <header className="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur-xl backdrop-saturate-150 md:hidden">
+        <div className="flex h-14 items-center justify-between px-[var(--gutter)]">
+          <Link href="/" aria-label="Nourish home" className="-m-1 rounded-md p-1">
+            <Wordmark />
+          </Link>
+          <AccountMenu user={user} name={name} placement="header" />
         </div>
       </header>
 
-      <main id="main" className={`mx-auto ${width} px-[var(--gutter)] pb-16 pt-8 sm:pt-14`}>
+      <main id="main" className={`mx-auto ${width} px-[var(--gutter)] pb-20 pt-8 md:pt-14`}>
         {children}
       </main>
 
       {/* Phone tab bar: the three destinations within thumb reach. */}
       <nav
         aria-label="App"
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 shadow-[0_-8px_16px_-12px_rgb(var(--sh-dark)/var(--sh-dark-a))] pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl backdrop-saturate-150 md:hidden"
       >
         <ul className="mx-auto grid max-w-md grid-cols-3">
           {TABS.map((t) => {
@@ -100,13 +109,7 @@ export default function AppShell({ children, wide = false }: { children: React.R
                     active ? 'text-accent-ink' : 'text-ink-3'
                   }`}
                 >
-                  <span
-                    className={`flex h-7 w-12 items-center justify-center rounded-full transition-colors ${
-                      active ? 'bg-accent-soft text-accent-ink' : ''
-                    }`}
-                  >
-                    <t.icon className="h-[18px] w-[18px]" aria-hidden="true" />
-                  </span>
+                  <t.icon className="h-[22px] w-[22px]" strokeWidth={active ? 2.2 : 1.8} aria-hidden="true" />
                   {t.label}
                 </Link>
               </li>
@@ -118,7 +121,7 @@ export default function AppShell({ children, wide = false }: { children: React.R
   )
 }
 
-function AccountMenu({ user }: { user: any }) {
+function AccountMenu({ user, name, placement }: { user: any; name: string; placement: 'sidebar' | 'header' }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const router = useRouter()
@@ -158,15 +161,25 @@ function AccountMenu({ user }: { user: any }) {
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label="Account"
-        className="flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-ink/[0.05]"
+        className={
+          placement === 'sidebar'
+            ? 'flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition-colors hover:bg-surface/70'
+            : 'flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-ink/[0.05]'
+        }
       >
-        <Avatar user={user} size={30} />
+        <Avatar user={user} size={placement === 'sidebar' ? 34 : 30} />
+        {placement === 'sidebar' && (
+          <span className="min-w-0">
+            <span className="block truncate text-sm font-medium capitalize">{name}</span>
+            <span className="block truncate text-xs text-ink-3">{user.email}</span>
+          </span>
+        )}
       </button>
 
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-1 w-64 animate-rise overflow-hidden rounded-3xl bg-paper py-2 shadow-neu"
+          className={`absolute z-50 w-64 animate-rise overflow-hidden rounded-2xl bg-surface py-1.5 shadow-pop ring-1 ring-line ${placement === 'sidebar' ? 'bottom-full left-0 mb-2' : 'right-0 top-full mt-2'}`}
         >
           <div className="flex items-center gap-3 border-b border-line px-3.5 py-3">
             <Avatar user={user} size={34} />
@@ -180,7 +193,7 @@ function AccountMenu({ user }: { user: any }) {
               role="menuitem"
               href="/settings"
               onClick={() => setOpen(false)}
-              className="flex h-10 items-center gap-3 px-3.5 text-sm text-ink-2 hover:bg-ink/[0.04] hover:text-ink"
+              className="mx-1.5 flex h-10 items-center gap-3 rounded-lg px-2.5 text-sm text-ink-2 hover:bg-ink/[0.05] hover:text-ink"
             >
               <Settings className="h-4 w-4" aria-hidden="true" />
               Settings
@@ -189,7 +202,7 @@ function AccountMenu({ user }: { user: any }) {
               role="menuitem"
               type="button"
               onClick={signOut}
-              className="flex h-10 w-full items-center gap-3 px-3.5 text-sm text-ink-2 hover:bg-ink/[0.04] hover:text-ink"
+              className="mx-1.5 flex h-10 w-[calc(100%-0.75rem)] items-center gap-3 rounded-lg px-2.5 text-sm text-ink-2 hover:bg-ink/[0.05] hover:text-ink"
             >
               <LogOut className="h-4 w-4" aria-hidden="true" />
               Sign out

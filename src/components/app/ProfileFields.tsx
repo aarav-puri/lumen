@@ -90,11 +90,11 @@ export default function ProfileFields({
 }) {
   return (
     <>
-      <h3 className="font-display text-lg font-bold tracking-tight">Diets you follow</h3>
+      <h3 className="text-lg font-display font-bold tracking-tight">Diets you follow</h3>
       <div className="mt-4">
         <DietPicker value={diets} onChange={onDiets} />
       </div>
-      <h3 className="mt-10 border-t border-line pt-8 font-display text-lg font-bold tracking-tight">Allergens and ingredients you avoid</h3>
+      <h3 className="mt-10 border-t border-line pt-8 text-lg font-display font-bold tracking-tight">Allergens and ingredients you avoid</h3>
       <div className="mt-4">
         <AllergenPicker value={avoid} onChange={onAvoid} />
       </div>
@@ -219,7 +219,7 @@ function Picker({
             <button
               type="button"
               onClick={add}
-              className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-xl bg-paper px-4 text-sm font-medium shadow-neu-sm transition-[transform,box-shadow] duration-150 hover:-translate-y-px hover:shadow-neu-hover active:scale-[0.98]"
+              className="btn-secondary mt-3 text-sm"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
               Add &ldquo;{query.trim().slice(0, MAX_ENTRY_LENGTH)}&rdquo;
@@ -263,13 +263,13 @@ function Choice({ on, onClick, label, hint }: { on: boolean; onClick: () => void
       aria-pressed={on}
       onClick={onClick}
       className={`flex min-h-14 items-center gap-3 rounded-xl border px-3.5 py-2.5 text-left transition-[transform,box-shadow,background-color] duration-150 active:scale-[0.98] ${
-        on ? 'border-transparent bg-paper text-accent-ink shadow-neu-inset' : 'border-transparent bg-paper shadow-neu-sm hover:-translate-y-px hover:shadow-neu-hover'
+        on ? 'border-transparent bg-accent-soft text-accent-ink ring-1 ring-inset ring-accent/40' : 'border-transparent bg-surface ring-1 ring-inset ring-line hover:bg-surface-2/60'
       }`}
     >
       <span
         aria-hidden="true"
         className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md transition-colors ${
-          on ? 'bg-accent text-on-accent shadow-neu-sm' : 'shadow-neu-inset-sm'
+          on ? 'bg-accent text-on-accent' : 'ring-1 ring-inset ring-line-strong'
         }`}
       >
         {on && <Check className="h-3.5 w-3.5" strokeWidth={3} />}

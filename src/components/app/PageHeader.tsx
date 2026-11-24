@@ -1,6 +1,6 @@
 /**
  * The title block shared by Scan, History and Settings: one display title, set like the landing headline,
- * an optional line under it, and any page actions, centered on the column.
+ * an optional line under it, and any page actions, left-aligned like an iOS large title.
  */
 export default function PageHeader({
   id,
@@ -19,7 +19,7 @@ export default function PageHeader({
         {title}
       </h1>
       {subtitle && <p className="app-page-subtitle">{subtitle}</p>}
-      {actions && <div className="mt-5 flex flex-wrap justify-center gap-2">{actions}</div>}
+      {actions && <div className="mt-5 flex flex-wrap gap-2">{actions}</div>}
     </header>
   )
 }

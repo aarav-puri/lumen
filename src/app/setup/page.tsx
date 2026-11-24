@@ -165,7 +165,7 @@ function Setup() {
                   placeholder="Your name"
                   aria-invalid={nameError ? true : undefined}
                   aria-describedby={nameError ? 'setup-name-error' : undefined}
-                  className="mt-8 w-full border-0 border-b-2 border-line rounded-none bg-transparent pb-3 font-display text-[clamp(1.75rem,4vw,2.5rem)] font-medium tracking-[-0.03em] text-ink outline-none transition-colors placeholder:text-ink-3/60 focus:border-accent focus-visible:rounded-none focus-visible:outline-none aria-[invalid=true]:border-level-high"
+                  className="mt-8 w-full border-0 border-b-2 border-line rounded-none bg-transparent pb-3 text-[clamp(1.75rem,4vw,2.5rem)] font-medium tracking-[-0.03em] text-ink outline-none transition-colors placeholder:text-ink-3/60 focus:border-accent focus-visible:rounded-none focus-visible:outline-none aria-[invalid=true]:border-level-high"
                 />
                 {nameError && (
                   <p id="setup-name-error" role="alert" className="mt-2 text-sm font-medium text-level-high">
@@ -195,7 +195,7 @@ function Setup() {
 
             {step === 'key' && (
               <>
-                <Question eyebrow="AI insights" title={<>Connect <em>Gemini</em></>} headingRef={headingRef} />
+                <Question eyebrow="AI" title={<>Connect <em>Gemini</em></>} headingRef={headingRef} />
                 <div className="card mt-8 p-5 sm:p-6">
                   <KeySetup
                     submitLabel="Verify and continue"
@@ -293,7 +293,7 @@ function Summary({ term, items, empty, onEdit }: { term: string; items: string[]
   return (
     <div className="flex items-start justify-between gap-4 px-5 py-4 sm:px-6">
       <div className="min-w-0">
-        <dt className="text-xs font-semibold uppercase tracking-wide text-ink-3">{term}</dt>
+        <dt className="t-eyebrow">{term}</dt>
         <dd className="mt-2 flex flex-wrap gap-1.5">
           {items.length ? (
             items.map((label) => (

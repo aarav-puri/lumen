@@ -14,7 +14,7 @@ export function GradeBadge({ grade, size = 'md', className = '' }: { grade: Grad
   const dims = { sm: 'h-6 w-6 text-xs rounded-md', md: 'h-9 w-9 text-base rounded-lg', lg: 'h-14 w-14 text-2xl rounded-xl' }[size]
   if (!grade) {
     return (
-      <span className={`inline-flex shrink-0 items-center justify-center border border-dashed border-line font-mono text-ink-3 ${dims} ${className}`}>
+      <span className={`inline-flex shrink-0 items-center justify-center border border-dashed border-line tnum text-ink-3 ${dims} ${className}`}>
         <span aria-hidden="true">?</span>
         <span className="sr-only">Not graded</span>
       </span>
@@ -46,13 +46,13 @@ export function ScoreBadge({ grade, score, size = 'md', className = '' }: { grad
  */
 export function ScoreMeter({ grade, score }: { grade: Grade | null; score: number | null }) {
   if (!grade || score === null) {
-    return <p className="font-display font-bold text-2xl leading-none text-ink-2">Not scored</p>
+    return <p className="font-semibold tracking-[-0.03em] text-2xl leading-none text-ink-2">Not scored</p>
   }
   return (
     <div className="w-full">
       <p className="flex items-baseline gap-1.5">
-        <span className="tnum font-display text-6xl font-bold leading-none tracking-[-0.04em]">{score}</span>
-        <span className="font-mono text-sm text-ink-3">/100</span>
+        <span className="tnum font-display text-7xl font-bold leading-none tracking-[-0.03em]">{score}</span>
+        <span className="tnum text-sm text-ink-3">/100</span>
       </p>
       <div
         role="meter"
@@ -79,7 +79,7 @@ export function ScoreMeter({ grade, score }: { grade: Grade | null; score: numbe
           style={{ left: `${score}%`, background: 'rgb(var(--ink))' }}
         />
       </div>
-      <div className="mt-2 flex justify-between font-mono text-2xs text-ink-3" aria-hidden="true">
+      <div className="mt-2 flex justify-between tnum text-2xs text-ink-3" aria-hidden="true">
         <span>0</span>
         <span>100</span>
       </div>

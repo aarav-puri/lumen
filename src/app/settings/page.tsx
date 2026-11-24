@@ -119,7 +119,7 @@ function KeySection() {
               </span>
               <div className="min-w-0">
                 <p className="text-sm font-medium">Key connected</p>
-                <p className="truncate font-mono text-xs text-ink-3">{maskKey(key)}</p>
+                <p className="truncate tnum text-xs text-ink-3">{maskKey(key)}</p>
               </div>
             </div>
             <div className="flex gap-2">

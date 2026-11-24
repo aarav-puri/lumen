@@ -34,6 +34,7 @@ const TICK_MS = 28
  */
 export default function ChatAgent({ context, open, onClose }: { context?: any; open: boolean; onClose: () => void }) {
   const [messages, setMessages] = useState<Message[]>([])
+
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   // Index of the reply still streaming in, if any.
@@ -110,7 +111,7 @@ export default function ChatAgent({ context, open, onClose }: { context?: any; o
             e.preventDefault()
             send(input)
           }}
-          className="rounded-[14px] border border-line bg-paper p-1.5 shadow-neu-inset transition-[border-color,box-shadow] duration-150 focus-within:border-line-strong/40 focus-within:shadow-neu-inset-deep"
+          className="rounded-[22px] bg-surface p-1.5 ring-1 ring-inset ring-line transition-shadow duration-150 focus-within:ring-2 focus-within:ring-accent"
         >
           <label htmlFor="chat-input" className="sr-only">
             Message Nourish AI
@@ -139,7 +140,7 @@ export default function ChatAgent({ context, open, onClose }: { context?: any; o
               type="submit"
               disabled={!input.trim() || busy}
               aria-label="Send"
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-accent text-on-accent shadow-neu-sm transition-[background-color,color,opacity,transform] duration-200 enabled:active:scale-[0.94] disabled:bg-surface-3 disabled:text-ink-3 disabled:shadow-none"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent transition-[background-color,color,opacity,transform] duration-200 enabled:active:scale-[0.94] disabled:bg-surface-3 disabled:text-ink-3 disabled:shadow-none"
             >
               <ArrowUp className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -151,7 +152,7 @@ export default function ChatAgent({ context, open, onClose }: { context?: any; o
         {messages.length === 0 ? (
           <div className="chat-in pt-2">
             <div>
-              <p className="font-display text-lg font-bold tracking-tight">Hi, I&rsquo;m Nourish AI.</p>
+              <p className="text-lg font-semibold tracking-tight">Hi, I&rsquo;m Nourish AI.</p>
               <p className="text-sm text-ink-2">
                 I&rsquo;ve read your {productCount} scan{productCount === 1 ? '' : 's'}. Ask me anything about them.
               </p>
@@ -171,7 +172,7 @@ export default function ChatAgent({ context, open, onClose }: { context?: any; o
             {messages.map((m, i) =>
               m.role === 'user' ? (
                 <div key={i} className="chat-in flex justify-end pl-14">
-                  <p className="whitespace-pre-wrap rounded-xl bg-surface-2 px-3.5 py-2 text-[0.9375rem] leading-relaxed text-ink [overflow-wrap:anywhere]">
+                  <p className="whitespace-pre-wrap rounded-[20px] rounded-br-md bg-accent px-4 py-2.5 text-[0.9375rem] leading-relaxed text-on-accent [overflow-wrap:anywhere]">
                     {m.content}
                   </p>
                 </div>

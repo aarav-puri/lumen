@@ -14,7 +14,7 @@ export default function NotFound() {
             <span key={i} className="bg-ink" style={{ width: w * 2 }} />
           ))}
         </div>
-        <p className="mt-6 font-mono text-sm text-ink-3">404</p>
+        <p className="mt-6 tnum text-sm text-ink-3">404</p>
         <h1 className="t-title mt-2">Nothing scans here.</h1>
         <p className="mt-3 leading-relaxed text-ink-2">This page may have moved, or the link may be mistyped.</p>
         <div className="mt-8 flex flex-wrap justify-center gap-2">

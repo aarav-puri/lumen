@@ -8,7 +8,9 @@ import { useAuth } from '@/lib/auth-context'
 import Wordmark from '@/components/brand/Wordmark'
 
 const NAV = [
+  { href: '/#how', label: 'How it works' },
   { href: '/#features', label: 'Features' },
+  { href: '/#faq', label: 'FAQ' },
   { href: '/about', label: 'About' },
 ]
 
@@ -38,17 +40,15 @@ export default function Navbar() {
     }
   }, [open])
 
-  const cta = user ? 'Go to dashboard' : 'Sign in'
-
   return (
     <header
-      className={`sticky top-0 z-50 transition-[background-color,box-shadow] duration-200 ${
+      className={`sticky top-0 z-50 border-b transition-[background-color,border-color] duration-200 ${
         scrolled || open
-          ? 'bg-paper/85 shadow-[0_8px_16px_-12px_rgb(var(--sh-dark)/var(--sh-dark-a))] backdrop-blur-md'
-          : 'bg-paper'
+          ? 'border-line/80 bg-paper/80 backdrop-blur-xl backdrop-saturate-150'
+          : 'border-transparent bg-paper'
       }`}
     >
-      <nav aria-label="Primary" className="relative flex h-20 max-w-[84rem] mx-auto items-center justify-between gap-4 px-4 sm:px-8">
+      <nav aria-label="Primary" className="relative mx-auto flex h-[4.5rem] max-w-6xl items-center justify-between gap-4 px-[var(--gutter)]">
         <Link href="/" aria-label="Nourish home" className="rounded-md">
           <Wordmark byline />
         </Link>
@@ -59,7 +59,7 @@ export default function Navbar() {
               <Link
                 href={l.href}
                 aria-current={pathname === l.href ? 'page' : undefined}
-                className="inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium text-ink-2 transition-colors hover:bg-ink/[0.04] hover:text-ink aria-[current=page]:text-ink"
+                className="inline-flex h-9 items-center rounded-full px-3.5 text-sm text-ink-2 transition-colors hover:text-ink aria-[current=page]:text-ink"
               >
                 {l.label}
               </Link>
@@ -78,19 +78,30 @@ export default function Navbar() {
           >
             {open ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
           </button>
-          <div className="flex items-center" aria-busy={loading || undefined}>
-            <Link href={user ? '/app' : '/signin'} className="btn-primary h-11 min-h-11 rounded-full px-5 sm:px-6">
-              {loading ? 'Sign in' : cta}
-            </Link>
+          <div className="flex items-center gap-2" aria-busy={loading || undefined}>
+            {user ? (
+              <Link href="/app" className="btn-primary h-10 min-h-10 px-5 text-sm">
+                Open Nourish
+              </Link>
+            ) : (
+              <>
+                <Link href="/signin" className="btn-secondary hidden h-10 min-h-10 px-5 text-sm sm:inline-flex">
+                  Sign in
+                </Link>
+                <Link href="/signup" className="btn-primary h-10 min-h-10 px-5 text-sm">
+                  Get started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
 
-      <div id="mobile-nav" hidden={!open} className="fixed inset-x-0 bottom-0 top-20 z-40 flex flex-col bg-paper md:hidden">
+      <div id="mobile-nav" hidden={!open} className="fixed inset-x-0 bottom-0 top-[4.5rem] z-40 flex flex-col bg-paper md:hidden">
         <ul className="flex-1 px-[var(--gutter)] pt-2">
           {NAV.map((l, i) => (
             <li key={l.href} className="animate-rise border-b border-line" style={{ animationDelay: `${i * 40}ms` }}>
-              <Link href={l.href} onClick={() => setOpen(false)} className="flex h-14 items-center font-display font-bold text-2xl">
+              <Link href={l.href} onClick={() => setOpen(false)} className="flex h-16 items-center font-display text-3xl font-bold tracking-[-0.02em]">
                 {l.label}
               </Link>
             </li>

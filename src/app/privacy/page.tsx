@@ -77,8 +77,17 @@ export default function PrivacyPage() {
             </p>
           </section>
 
+          <section id="gemini-key" className="scroll-mt-24">
+            <h2>5. Your Gemini API Key</h2>
+            <p>
+              Nourish AI runs on a Google Gemini API key that you add yourself. Your key is stored only in this browser. It is
+              passed to Google with each Nourish AI request and is never saved on our servers. You can remove it at any time in
+              Settings.
+            </p>
+          </section>
+
           <section>
-            <h2>5. Your Rights</h2>
+            <h2>6. Your Rights</h2>
             <p>You have the right to:</p>
             <ul>
               <li>Access your personal data</li>
@@ -89,7 +98,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2>6. Age Requirement</h2>
+            <h2>7. Age Requirement</h2>
             <p>
               Nourish is intended for users who are 18 years of age or older. By using our service, you
               represent and warrant that you are at least 18 years old. We do not knowingly collect
@@ -98,7 +107,7 @@ export default function PrivacyPage() {
           </section>
 
           <p className="!mt-12 text-sm text-ink-3">
-            Last updated: October 14, 2026
+            Last updated: November 23, 2026
           </p>
         </div>
         <p className="mt-10 text-sm text-ink-2">

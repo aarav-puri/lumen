@@ -13,11 +13,11 @@ export default function Toaster() {
         unstyled: true,
         classNames: {
           toast:
-            'flex w-[calc(100vw-2rem)] max-w-sm items-center gap-3 rounded-2xl bg-paper px-4 py-3 text-sm text-ink shadow-neu',
+            'flex w-[calc(100vw-2rem)] max-w-sm items-center gap-3 rounded-2xl bg-surface px-4 py-3 text-sm text-ink shadow-pop ring-1 ring-line/70',
           title: 'font-medium',
           description: 'text-ink-2',
           actionButton:
-            'ml-auto shrink-0 rounded-xl bg-paper px-3 py-1.5 text-xs font-semibold text-accent-ink shadow-neu-sm active:shadow-neu-inset-sm',
+            'ml-auto shrink-0 rounded-full bg-accent-soft px-3 py-1.5 text-xs font-medium text-accent-ink',
           icon: 'shrink-0',
         },
       }}

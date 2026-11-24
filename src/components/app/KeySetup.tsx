@@ -59,8 +59,21 @@ export default function KeySetup({ onSaved, submitLabel = 'Save key' }: { onSave
         value={value}
         onChange={(e) => setValue(e.target.value)}
         error={error}
-        hint="Your key is stored only in this browser and passed to Google with each request, never saved on our servers."
-        className="font-mono text-sm"
+        hint={
+          <>
+            How your key is handled:{' '}
+            <a
+              href="/privacy#gemini-key"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-accent-ink underline decoration-accent/30 underline-offset-4 hover:decoration-accent"
+            >
+              read our Privacy Policy
+            </a>
+            .
+          </>
+        }
+        className="tnum text-sm"
         trailing={
           <button
             type="button"

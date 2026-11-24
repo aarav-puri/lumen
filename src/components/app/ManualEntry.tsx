@@ -75,7 +75,7 @@ export default function ManualEntry({ barcode, onDone }: { barcode: string; onDo
         {barcode && (
           <>
             {' '}
-            Barcode <span className="font-mono text-ink">{barcode}</span>.
+            Barcode <span className="tnum text-ink">{barcode}</span>.
           </>
         )}
       </p>
@@ -127,11 +127,11 @@ export default function ManualEntry({ barcode, onDone }: { barcode: string; onDo
                       inputMode="decimal"
                       value={nutrients[n.key] ?? ''}
                       onChange={(e) => setNutrients((s) => ({ ...s, [n.key]: e.target.value.replace(/[^\d.,]/g, '') }))}
-                      className="h-9 w-20 rounded-lg bg-paper px-2 text-right font-mono text-sm shadow-neu-sm focus:outline-none focus:ring-2 focus:ring-ink/40"
+                      className="h-9 w-20 rounded-lg bg-surface px-2 text-right tnum text-sm ring-1 ring-inset ring-line focus:outline-none focus:ring-2 focus:ring-accent"
                       aria-label={`${n.label} in ${n.unit}`}
                       placeholder="–"
                     />
-                    <span className="w-8 font-mono text-xs text-ink-3">{n.unit}</span>
+                    <span className="w-8 tnum text-xs text-ink-3">{n.unit}</span>
                   </span>
                 </label>
               )

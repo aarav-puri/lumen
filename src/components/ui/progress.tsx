@@ -11,10 +11,10 @@ export function Progress({ value, label, className = '' }: { value: number; labe
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={Math.round(pct)}
-      className={`relative h-3 w-full overflow-hidden rounded-full bg-paper shadow-neu-inset-sm ${className}`}
+      className={`relative h-3 w-full overflow-hidden rounded-full bg-surface-2 ${className}`}
     >
       <div
-        className="h-full rounded-full bg-ink transition-[width] duration-500 ease-out"
+        className="h-full rounded-full bg-accent transition-[width] duration-500 ease-out"
         style={{ width: `${pct}%` }}
       />
     </div>

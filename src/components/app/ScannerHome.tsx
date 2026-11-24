@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, useReducedMotion } from 'motion/react'
-import { Camera, ImageUp, Leaf, Search, Keyboard } from 'lucide-react'
+import { Camera, ChevronRight, ImageUp, Leaf, Search, Keyboard } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/lib/auth-context'
 import { decodeImage, isValidGtin } from '@/lib/barcode'
@@ -24,6 +24,12 @@ export default function ScannerHome({ onOpen }: { onOpen: (code: string) => void
   const fileRef = useRef<HTMLInputElement>(null)
   const numberRef = useRef<HTMLInputElement>(null)
   const reduce = useReducedMotion()
+  // Set after mount so the server and the browser render the same first frame.
+  const [greeting, setGreeting] = useState('Hello')
+  useEffect(() => {
+    const h = new Date().getHours()
+    setGreeting(h < 5 ? 'Hello' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening')
+  }, [])
   // The tab panels differ in height; measure the open one so the card eases between them.
   const panelsRef = useRef<HTMLDivElement>(null)
   const [panelsHeight, setPanelsHeight] = useState<number>()
@@ -110,14 +116,19 @@ export default function ScannerHome({ onOpen }: { onOpen: (code: string) => void
       <div className="mx-auto max-w-2xl">
       <PageHeader
         id="scan-h"
-        title="Scan your food."
-        subtitle={user?.user_metadata?.display_name ? `Ready, ${user.user_metadata.display_name}?` : 'Point your camera at a barcode, or use a photo or the number.'}
+        title={user?.user_metadata?.display_name ? `${greeting}, ${user.user_metadata.display_name}.` : `${greeting}.`}
+        subtitle="What are you checking today? Scan the barcode, use a photo, or type the number."
       />
       <section aria-labelledby="scan-h" className="scanner-workspace">
         {/* The live camera is the main way in; the tabs below are the fallbacks. */}
         <button type="button" onClick={() => setCamera(true)} className="scan-camera-button">
-          <Camera className="h-5 w-5" aria-hidden="true" />
-          Scan with camera
+          <span className="grid h-16 w-16 place-items-center rounded-full bg-on-accent/15 ring-1 ring-on-accent/25">
+            <Camera className="h-7 w-7" aria-hidden="true" />
+          </span>
+          <span>
+            Scan with camera
+            <span className="mt-1 block text-sm font-normal text-on-accent/75">Point it at any barcode</span>
+          </span>
         </button>
         <div role="tablist" aria-label="Other ways to scan" className="scan-switch">
           {([{id:'upload',label:'Upload photo',icon:ImageUp},{id:'manual',label:'Enter manually',icon:Keyboard}] as const).map((item,index,items) => (
@@ -141,18 +152,17 @@ export default function ScannerHome({ onOpen }: { onOpen: (code: string) => void
           <div ref={panelsRef}>
           <div id="panel-upload" role="tabpanel" aria-labelledby="tab-upload" hidden={method !== 'upload'} tabIndex={0} className="scan-panel">
             <button type="button" onClick={() => fileRef.current?.click()} disabled={reading} className={`scan-upload ${dragging ? 'is-dragging' : ''}`}>
-              {reading ? <Spinner className="h-8 w-8" /> : <ImageUp className="h-9 w-9 text-accent-ink" aria-hidden="true" />}
+              {reading ? <Spinner className="h-7 w-7" /> : <ImageUp className="h-7 w-7 text-ink-2" aria-hidden="true" strokeWidth={1.6} />}
               <span className="font-medium">{reading ? 'Reading barcode…' : dragging ? 'Drop your photo here' : 'Choose a barcode photo'}</span>
-              <span className="text-sm text-ink-2">Or drag and drop, or paste an image</span>
+              <span className="text-sm text-ink-3">Or drag and drop, or paste an image</span>
             </button>
             <input ref={fileRef} type="file" accept="image/*" className="sr-only" tabIndex={-1} aria-label="Barcode photo" onChange={(e) => { const f=e.target.files?.[0]; e.target.value=''; if(f) readPhoto(f) }} />
             <p role="status" className="sr-only">{reading ? 'Reading barcode from your photo' : ''}</p>
           </div>
           <div id="panel-manual" role="tabpanel" aria-labelledby="tab-manual" hidden={method !== 'manual'} tabIndex={0} className="scan-panel">
-            <div className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-2xl bg-accent-soft text-accent-ink"><Keyboard className="h-7 w-7" aria-hidden="true" /></div>
-            <form onSubmit={submitNumber} className="text-left" role="search" aria-label="Look up a barcode number">
+                        <form onSubmit={submitNumber} className="text-left" role="search" aria-label="Look up a barcode number">
               <label htmlFor="barcode-number" className="mb-2 block text-sm font-medium">Barcode number</label>
-              <input ref={numberRef} id="barcode-number" inputMode="numeric" autoComplete="off" enterKeyHint="search" placeholder="e.g. 3017620422003" value={number} onChange={(e) => setNumber(e.target.value.replace(/[^\d\s]/g, ''))} className="field h-14 font-mono text-base tracking-wider" />
+              <input ref={numberRef} id="barcode-number" inputMode="numeric" autoComplete="off" enterKeyHint="search" placeholder="e.g. 3017620422003" value={number} onChange={(e) => setNumber(e.target.value.replace(/[^\d\s]/g, ''))} className="field h-14 tnum text-lg tracking-[0.04em]" />
               <Button type="submit" className="mt-5 h-12 w-full" disabled={!number.trim()}><Search className="h-4 w-4" aria-hidden="true" />Look up product</Button>
             </form>
           </div>
@@ -163,12 +173,14 @@ export default function ScannerHome({ onOpen }: { onOpen: (code: string) => void
             <button
               type="button"
               onClick={() => router.push('/settings#profile')}
-              className="mt-4 flex w-full items-center justify-between gap-4 rounded-2xl border border-line bg-surface px-5 py-4 text-left transition-colors hover:border-accent/30 hover:bg-accent-soft/30"
+              className="tile mt-3 flex w-full items-center gap-4 px-5 py-4 text-left"
             >
-              <span>
-                <span className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-accent-soft text-accent-ink"><Leaf className="h-4 w-4" aria-hidden="true" /></span><span className="block text-sm font-semibold">Food profile</span>
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-ink"><Leaf className="h-5 w-5" aria-hidden="true" /></span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-medium">Set up your food profile</span>
+                <span className="block text-sm text-ink-3">Diets and allergens, checked on every scan</span>
               </span>
-              <span className="text-sm font-medium text-accent-ink">Set up</span>
+              <ChevronRight className="h-5 w-5 shrink-0 text-ink-3" aria-hidden="true" />
             </button>
           )}
       </div>

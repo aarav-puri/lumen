@@ -22,7 +22,7 @@ export default function RecentScans({ items, onOpen }: { items: RecentScan[] | n
   return (
     <section aria-labelledby="recent-h" className="card self-start p-5 sm:p-6">
       <div className="flex items-baseline justify-between">
-        <h2 id="recent-h" className="font-display text-lg font-bold tracking-tight">
+        <h2 id="recent-h" className="text-lg font-display font-bold tracking-tight">
           Recent scans
         </h2>
         {items && items.length > 0 && (

@@ -1,22 +1,13 @@
 import type { Metadata, Viewport } from 'next'
-import { DM_Sans, Geist_Mono, Plus_Jakarta_Sans } from 'next/font/google'
+import { Inter } from 'next/font/google'
+import localFont from 'next/font/local'
 import { AuthProvider } from '@/lib/auth-context'
 import Toaster from '@/components/ui/Toaster'
 import './globals.css'
 
-/**
- * DM Sans carries the interface, Plus Jakarta Sans the headlines, and Geist
- * Mono the data (barcodes, grams, scores). All three are self-hosted by
- * next/font.
- */
-const sans = DM_Sans({ subsets: ['latin'], display: 'swap', variable: '--font-sans' })
-const display = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['500', '600', '700', '800'],
-  variable: '--font-display',
-})
-const geistMono = Geist_Mono({ subsets: ['latin'], display: 'swap', variable: '--font-geist-mono' })
+/** Inter for reading, Satoshi (Fontshare, self-hosted) for headings. */
+const sans = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-sans' })
+const display = localFont({ src: './fonts/Satoshi-Variable.woff2', weight: '300 900', display: 'swap', variable: '--font-display' })
 
 export const metadata: Metadata = {
   title: {
@@ -50,14 +41,14 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f7f8f2' },
-    { media: '(prefers-color-scheme: dark)', color: '#101b16' },
+    { media: '(prefers-color-scheme: light)', color: '#fcfbf7' },
+    { media: '(prefers-color-scheme: dark)', color: '#0c0c0d' },
   ],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${sans.variable} ${display.variable}`}>
       <body>
         <a href="#main" className="skip-link">
           Skip to content

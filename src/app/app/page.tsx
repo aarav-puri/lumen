@@ -210,7 +210,7 @@ function Scanner() {
           title="Not in the database yet"
           body={
             <>
-              No product uses <span className="font-mono text-ink">{view.code}</span> in Open Food Facts or Go-UPC.
+              No product uses <span className="tnum text-ink">{view.code}</span> in Open Food Facts or Go-UPC.
               Newer and local products are often missing. Check the digits, or enter the details from the package and
               we will analyze them.
             </>
@@ -306,7 +306,7 @@ function StateCard({
         <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-2">
           <Icon className="h-5 w-5 text-ink-2" aria-hidden="true" />
         </span>
-        <h1 className="mt-4 font-display font-bold text-2xl leading-tight">{title}</h1>
+        <h1 className="mt-4 font-display font-bold tracking-[-0.02em] text-2xl leading-tight">{title}</h1>
         <p className="mt-2 leading-relaxed text-ink-2">{body}</p>
         <div className="mt-6 flex flex-col gap-2 sm:flex-row">{children}</div>
       </div>
@@ -356,7 +356,7 @@ function LoadingReport({ code, onCancel }: { code: string; onCancel: () => void 
       </div>
       <p className="mt-6 flex items-center gap-2 text-sm text-ink-2">
         <Spinner />
-        {slow ? 'Still working. The food database is slow right now.' : <>Looking up <span className="font-mono">{code}</span></>}
+        {slow ? 'Still working. The food database is slow right now.' : <>Looking up <span className="tnum">{code}</span></>}
       </p>
     </div>
   )
