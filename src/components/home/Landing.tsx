@@ -9,11 +9,9 @@ import {
   Camera,
   ChevronLeft,
   ChevronRight,
-  ClipboardPaste,
   Columns2,
   ListChecks,
   MessageCircle,
-  Mic,
   ScanLine,
   Search,
   Share,
@@ -443,43 +441,6 @@ function Why() {
   )
 }
 
-/* ---------- Free ---------- */
-
-function Free() {
-  return (
-    <section aria-labelledby="free-h" className="relative overflow-hidden border-t border-white/[0.06] px-[var(--gutter)] py-28">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
-        <div>
-          <h2 id="free-h" className="t-title max-w-[12ch] text-[#d4d4dc]">
-            <BlurWords text="Free. No ads. Yours." />
-          </h2>
-          <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-3">Everything in Lumen is free to use, with nothing to unlock and nothing to sell you.</p>
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2">
-            {[
-              { icon: Camera, t: 'Unlimited scans', b: 'Scan as much as you shop.' },
-              { icon: WifiOff, t: 'Installable', b: 'Add it to your Home Screen.' },
-              { icon: Mic, t: 'Your own AI key', b: 'Stored in your browser only.' },
-              { icon: ClipboardPaste, t: 'Missing a product?', b: 'Type the label in yourself.' },
-            ].map((f, i) => (
-              <Reveal key={f.t} index={i % 2}>
-                <f.icon className="h-5 w-5 text-accent" />
-                <p className="mt-3 font-display text-lg font-bold tracking-[-0.015em]">{f.t}</p>
-                <p className="mt-1 text-ink-3">{f.b}</p>
-              </Reveal>
-            ))}
-          </ul>
-        </div>
-        <div aria-hidden="true" className="relative mx-auto h-[26rem] w-full max-w-md">
-          <div className="absolute inset-10 rounded-full bg-[radial-gradient(closest-side,rgb(139_123_255/0.3),rgb(255_179_138/0.12),transparent)] blur-2xl" />
-          <img src={glass('leaf')} alt="" className="absolute left-0 top-0 w-64 -rotate-12" />
-          <img src={glass('barcode')} alt="" className="absolute bottom-6 right-0 w-56 rotate-6" />
-          <img src={glass('orb')} alt="" className="absolute bottom-0 left-10 w-28" />
-        </div>
-      </div>
-    </section>
-  )
-}
-
 /* ---------- Closing card ---------- */
 
 function Closing() {
@@ -521,7 +482,6 @@ export default function Landing() {
       <Story />
       <Carousel />
       <Why />
-      <Free />
       <Closing />
     </>
   )
